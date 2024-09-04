@@ -1,9 +1,37 @@
 from odoo import fields,models
 from datetime import datetime, timedelta
 
+
+class EstatePropertyOffer(models.Model):
+    _name = 'estate.property.offer'
+    _description = 'Property Offer'
+
+    price = fields.Float(string='Price', required=True)
+    partner_id = fields.Many2one('res.partner', string='Partner', required=True)
+    status = fields.Selection([
+        ('accepted', 'Accepted'),
+        ('refused', 'Refused'),
+    ], string='Status', default='accepted')
+    property_id = fields.Many2one('estate.property', string='Property', required=True)
+
+
+class EstatePropertyTag(models.Model):
+    _name = "estate.property.tag"
+    _description = "Property Tag"
+
+    name = fields.Char(string="Name", required=True)
+
+
+class EstatePropertyType(models.Model):
+    _name = "estate.property.type"
+    _description = "Property Type"
+
+    name = fields.Char(string="Name", required=True)
+
+
 class EstateProperty(models.Model):
     _name = "estate.property"
-    _description='This module created by Kulida Denys'
+    _description='Property'
 
     last_seen = fields.Datetime("Last Seen", default=fields.Datetime.now)
     name = fields.Char(string="Estate", required=True, default='Unknown')
@@ -37,3 +65,20 @@ class EstateProperty(models.Model):
     )
     garden_area = fields.Integer(string="Garden Area (sqm)")
     description = fields.Text(string="Description")
+    property_type_id = fields.Many2one('estate.property.type', string="Property Type")
+    buyer_id = fields.Many2one('res.partner', string="Buyer")
+    seller_id = fields.Many2one('res.partner', string="Salesman", index=True, tracking=True, default=lambda self: self.env.user.partner_id.id)
+    tag_ids = fields.Many2many('estate.property.tag', string="Tags")
+    offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
+
+
+
+
+
+
+
+
+
+
+
+

@@ -116,4 +116,35 @@
         <field name="view_id" ref="view_estate_property_type_tree"/>
     </record>
 
+            <record id="view_estate_property_tags_tree" model="ir.ui.view">
+        <field name="name">estate.property.tag.tree</field>
+        <field name="model">estate.property.tag</field>
+        <field name="arch" type="xml">
+            <tree string="Property Tags">
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_estate_property_tags_form" model="ir.ui.view">
+        <field name="name">estate.property.tag.form</field>
+        <field name="model">estate.property.tag</field>
+        <field name="arch" type="xml">
+            <form string="Property Tags">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="estate_property_tags_action" model="ir.actions.act_window">
+        <field name="name">Property Tags</field>
+        <field name="res_model">estate.property.tag</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_estate_property_tags_tree"/>
+    </record>
+
 </odoo>

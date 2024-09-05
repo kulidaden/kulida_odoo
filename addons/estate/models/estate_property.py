@@ -1,4 +1,4 @@
-from odoo import fields,models
+from odoo import fields,models,api
 from datetime import datetime, timedelta
 
 
@@ -13,7 +13,13 @@ class EstatePropertyOffer(models.Model):
         ('refused', 'Refused'),
     ], string='Status', default='accepted')
     property_id = fields.Many2one('estate.property', string='Property', required=True)
+    validity=fields.Integer(string='Validity',default=7)
+    date_deadline=fields.Date(string="Deadline",compute='_compute_deadline',store=True,readonly=False)
 
+    @api.depends('validity')
+    def _compute_deadline(self):
+        for deadline in self:
+            deadline.date_deadline=datetime.today() + timedelta(days=deadline.validity)
 
 class EstatePropertyTag(models.Model):
     _name = "estate.property.tag"
@@ -41,7 +47,7 @@ class EstateProperty(models.Model):
     expected_price = fields.Float(string="Expected Price", required=True)
     garage = fields.Boolean(string="Garage")
     selling_price = fields.Float(string="Selling Price",readonly=True)
-    garden = fields.Boolean(string="Garden")
+    garden = fields.Boolean(string="Garden",compute='_compute_onchange', store=True, readonly=False)
     bedrooms = fields.Integer(string="Bedrooms")
     active=fields.Boolean(string='Active',default=True)
     living_area = fields.Integer(string="Living Area (sqm)")
@@ -67,18 +73,34 @@ class EstateProperty(models.Model):
     description = fields.Text(string="Description")
     property_type_id = fields.Many2one('estate.property.type', string="Property Type")
     buyer_id = fields.Many2one('res.partner', string="Buyer")
-    seller_id = fields.Many2one('res.partner', string="Salesman", index=True, tracking=True, default=lambda self: self.env.user.partner_id.id)
+    seller_id = fields.Many2one('res.partner', string="Salesman", index=True, default=lambda self: self.env.user.partner_id.id)
     tag_ids = fields.Many2many('estate.property.tag', string="Tags")
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
+    total_area=fields.Float(compute='_compute_area_total',store=True)
+    amount=fields.Float()
+    best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer', store=True)
 
+    @api.depends('living_area','garden_area')
+    def _compute_area_total(self):
+        for record in self:
+            record.total_area=record.living_area+record.garden_area
 
+    @api.depends('offer_ids.price')
+    def _compute_best_offer(self):
+        for property in self:
+            if property.offer_ids:
+                property.best_offer = max(property.offer_ids.mapped('price'))
+            else:
+                property.best_offer = 0.0
 
-
-
-
-
-
-
+    @api.onchange("garden")
+    def _compute_onchange(self):
+        if self.garden:
+            self.garden_orientation = 'north'
+            self.garden_area = 10
+        else:
+            self.garden_orientation = False
+            self.garden_area = False
 
 
 

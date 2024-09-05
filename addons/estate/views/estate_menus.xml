@@ -10,5 +10,4 @@
           parent="menu_estate_settings" action="estate_property_type_action"/>
     <menuitem id="menu_estate_property_tags" name="Property Tags"
           parent="menu_estate_settings" action="estate_property_tags_action"/>
-
 </odoo>

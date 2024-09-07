@@ -25,8 +25,12 @@ class EstatePropertyOffer(models.Model):
 
     def action_accept(self):
         self.ensure_one()
+        if self.price < 0:
+            raise UserError('The expected price must be strictly positive!')
         if self.status == 'accepted':
             return
+        if self.price<(self.property_id.expected_price*0.90):
+            raise ValidationError("Selling price cannot be lower than 90% of the expected price.")
         self.write({'status': 'accepted'})
         other_offers = self.search([
             ('property_id', '=', self.property_id.id),
@@ -51,6 +55,13 @@ class EstatePropertyTag(models.Model):
     _description = "Property Tag"
 
     name = fields.Char(string="Name", required=True)
+    _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
+
+    def active_save_tag(self):
+        self.ensure_one()
+        self.write({
+            'name':self.name,
+        })
 
 
 class EstatePropertyType(models.Model):
@@ -58,6 +69,13 @@ class EstatePropertyType(models.Model):
     _description = "Property Type"
 
     name = fields.Char(string="Name", required=True)
+    _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
+
+    def active_save_type(self):
+        self.ensure_one()
+        self.write({
+            'name':self.name,
+        })
 
 
 class EstateProperty(models.Model):
@@ -115,6 +133,9 @@ class EstateProperty(models.Model):
         for property in self:
             if property.offer_ids:
                 property.best_offer = max(property.offer_ids.mapped('price'))
+                if property.best_offer<=0:
+                    property.best_offer=0.0
+                    raise UserError('The price must be strictly positive!')
             else:
                 property.best_offer = 0.0
 
@@ -129,6 +150,10 @@ class EstateProperty(models.Model):
 
     def action_save(self):
         self.ensure_one()
+        if self.expected_price<1:
+            raise UserError('The expected price must be strictly positive!')
+        if self.selling_price<0:
+            raise UserError('The selling price must be strictly positive!')
         self.write({
             'name': self.name,
             'last_seen': self.last_seen,

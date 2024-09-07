@@ -4,12 +4,12 @@
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
             <form string="Properties">
-                <header>
-                    <button name="action_sold_" type="object" string="SOLD"  class="oe_highlight" />
-                    <button name="action_canceled_" type="object" string="CANCELED" class="oe_button"/>
-                </header>
                 <sheet>
-                    <button name="action_save" type="object" string="SAVE" class="oe_highlight" />
+                    <header>
+                        <button name="action_sold_" type="object" string="SOLD"  class="oe_highlight" />
+                        <button name="action_canceled_" type="object" string="CANCELED" class="oe_button"/>
+                    </header>
+                    <button name="action_save" type="object" string="SAVE" class="oe_highlight"/>
                     <group>
                         <group>
                             <field name="name"/>
@@ -112,6 +112,7 @@
         <field name="arch" type="xml">
             <form string="Property Type">
                 <sheet>
+                    <button name="active_save_type" type="object" string="SAVE" class="oe_highlight"/>
                     <group>
                         <field name="name"/>
                     </group>
@@ -143,6 +144,7 @@
         <field name="arch" type="xml">
             <form string="Property Tags">
                 <sheet>
+                    <button name="active_save_tag" type="object" string="SAVE" class="oe_highlight"/>
                     <group>
                         <field name="name"/>
                     </group>

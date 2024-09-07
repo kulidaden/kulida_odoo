@@ -1,5 +1,6 @@
 from odoo import fields,models,api
 from datetime import datetime, timedelta
+from odoo.exceptions import *
 
 
 class EstatePropertyOffer(models.Model):
@@ -20,6 +21,26 @@ class EstatePropertyOffer(models.Model):
     def _compute_deadline(self):
         for deadline in self:
             deadline.date_deadline=datetime.today() + timedelta(days=deadline.validity)
+
+    def action_accept(self):
+        self.ensure_one()
+        if self.status == 'accepted':
+            return
+        self.write({'status': 'accepted'})
+        other_offers = self.search([
+            ('property_id', '=', self.property_id.id),
+            ('id', '!=', self.id)
+        ])
+        other_offers.write({'status': 'refused'})
+        self.property_id.selling_price = self.price
+        self.property_id.buyer_id=self.partner_id
+    def action_refuse(self):
+        self.ensure_one()
+        if self.status == 'refused':
+            return
+        self.write({'status': 'refused'})
+        self.property_id.selling_price = 0.0
+        self.property_id.buyer_id = ''
 
 class EstatePropertyTag(models.Model):
     _name = "estate.property.tag"
@@ -48,7 +69,7 @@ class EstateProperty(models.Model):
     garage = fields.Boolean(string="Garage")
     selling_price = fields.Float(string="Selling Price",readonly=True)
     garden = fields.Boolean(string="Garden",compute='_compute_onchange', store=True, readonly=False)
-    bedrooms = fields.Integer(string="Bedrooms")
+    bedrooms = fields.Integer(string="Bedrooms",default=2)
     active=fields.Boolean(string='Active',default=True)
     living_area = fields.Integer(string="Living Area (sqm)")
     garden_orientation = fields.Selection(
@@ -60,7 +81,7 @@ class EstateProperty(models.Model):
         ],
     )
     facades = fields.Integer(string="Facades")
-    state=fields.Selection(string='State',required=True,copy=False,default="new",
+    state=fields.Selection(string='Status',required=True,copy=False,default="new",
                            selection=[
                                ('new',"New"),
                                ('offer received',"Offer Received"),
@@ -72,8 +93,8 @@ class EstateProperty(models.Model):
     garden_area = fields.Integer(string="Garden Area (sqm)")
     description = fields.Text(string="Description")
     property_type_id = fields.Many2one('estate.property.type', string="Property Type")
-    buyer_id = fields.Many2one('res.partner', string="Buyer")
-    seller_id = fields.Many2one('res.partner', string="Salesman", index=True, default=lambda self: self.env.user.partner_id.id)
+    buyer_id = fields.Many2one('res.partner', string="Buyer",readonly=True)
+    seller_id = fields.Many2one('res.partner', string="Salesman", index=True, readonly=True, default=lambda self: self.env.user.partner_id.id)
     tag_ids = fields.Many2many('estate.property.tag', string="Tags")
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
     total_area=fields.Float(compute='_compute_area_total',store=True)
@@ -102,5 +123,14 @@ class EstateProperty(models.Model):
             self.garden_orientation = False
             self.garden_area = False
 
+    def action_sold_(self):
+        for record in self:
+            if record.state == 'canceled':
+                raise UserError('Canceled properties cannot be set as sold.')
+            record.state = 'sold'
 
-
+    def action_canceled_(self):
+        for record in self:
+            if record.state == 'sold':
+                raise UserError('Sold properties cannot be canceled.')
+            record.state = 'canceled'

@@ -10,9 +10,10 @@ class EstatePropertyOffer(models.Model):
     price = fields.Float(string='Price', required=True)
     partner_id = fields.Many2one('res.partner', string='Partner', required=True)
     status = fields.Selection([
+        (" "," "),
         ('accepted', 'Accepted'),
         ('refused', 'Refused'),
-    ], string='Status', default='accepted')
+    ], string='Status', default=' ')
     property_id = fields.Many2one('estate.property', string='Property', required=True)
     validity=fields.Integer(string='Validity',default=7)
     date_deadline=fields.Date(string="Deadline",compute='_compute_deadline',store=True,readonly=False)
@@ -34,6 +35,8 @@ class EstatePropertyOffer(models.Model):
         other_offers.write({'status': 'refused'})
         self.property_id.selling_price = self.price
         self.property_id.buyer_id=self.partner_id
+        self.property_id.state = 'sold'
+
     def action_refuse(self):
         self.ensure_one()
         if self.status == 'refused':
@@ -41,6 +44,7 @@ class EstatePropertyOffer(models.Model):
         self.write({'status': 'refused'})
         self.property_id.selling_price = 0.0
         self.property_id.buyer_id = ''
+
 
 class EstatePropertyTag(models.Model):
     _name = "estate.property.tag"
@@ -122,6 +126,35 @@ class EstateProperty(models.Model):
         else:
             self.garden_orientation = False
             self.garden_area = False
+
+    def action_save(self):
+        self.ensure_one()
+        self.write({
+            'name': self.name,
+            'last_seen': self.last_seen,
+            'date_availability': self.date_availability,
+            'postcode': self.postcode,
+            'expected_price': self.expected_price,
+            'garage': self.garage,
+            'selling_price': self.selling_price,
+            'garden': self.garden,
+            'bedrooms': self.bedrooms,
+            'active': self.active,
+            'living_area': self.living_area,
+            'garden_orientation': self.garden_orientation,
+            'facades': self.facades,
+            'state': self.state,
+            'garden_area': self.garden_area,
+            'description': self.description,
+            'property_type_id': self.property_type_id,
+            'buyer_id': self.buyer_id,
+            'seller_id': self.seller_id,
+            'tag_ids': self.tag_ids,
+            'offer_ids': self.offer_ids,
+            'total_area': self.total_area,
+            'amount': self.amount,
+            'best_offer': self.best_offer
+        })
 
     def action_sold_(self):
         for record in self:

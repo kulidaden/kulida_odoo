@@ -5,10 +5,11 @@
         <field name="arch" type="xml">
             <form string="Properties">
                 <header>
-                    <button name="action_sold_" type="object" string="SOLD"  class="oe_highlight"/>
+                    <button name="action_sold_" type="object" string="SOLD"  class="oe_highlight" />
                     <button name="action_canceled_" type="object" string="CANCELED" class="oe_button"/>
                 </header>
                 <sheet>
+                    <button name="action_save" type="object" string="SAVE" class="oe_highlight" />
                     <group>
                         <group>
                             <field name="name"/>
@@ -21,7 +22,6 @@
                             <field name="expected_price"/>
                             <field name="best_offer"/>
                             <field name="selling_price"/>
-                            <field name="state"/>
                         </group>
                     </group>
                     <notebook>
@@ -46,8 +46,8 @@
                                     <field name="validity"/>
                                     <field name="date_deadline"/>
                                     <field name="status"/>
-                                    <button name="action_accept" type="object" string="Accept" icon="fa-check" class="oe_highlight" attrs="{'invisible': [('status', '=', 'accepted')]}"/>
-                                    <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button" attrs="{'invisible': [('status', '=', 'refused')]}"/>
+                                    <button name="action_accept" type="object" string="Accept" icon="fa-check" class="oe_highlight"/>
+                                    <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button"/>
                                 </tree>
                             </field>
                         </page>

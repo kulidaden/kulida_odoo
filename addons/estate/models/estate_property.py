@@ -6,6 +6,7 @@ from odoo.exceptions import *
 class EstatePropertyOffer(models.Model):
     _name = 'estate.property.offer'
     _description = 'Property Offer'
+    _order = "price desc"
 
     price = fields.Float(string='Price', required=True)
     partner_id = fields.Many2one('res.partner', string='Partner', required=True)
@@ -14,7 +15,7 @@ class EstatePropertyOffer(models.Model):
         ('accepted', 'Accepted'),
         ('refused', 'Refused'),
     ], string='Status', default=' ')
-    property_id = fields.Many2one('estate.property', string='Property', required=True)
+    property_id = fields.Many2one('estate.property', string='Property')
     validity=fields.Integer(string='Validity',default=7)
     date_deadline=fields.Date(string="Deadline",compute='_compute_deadline',store=True,readonly=False)
 
@@ -27,8 +28,8 @@ class EstatePropertyOffer(models.Model):
         self.ensure_one()
         if self.price < 0:
             raise UserError('The expected price must be strictly positive!')
-        if self.status == 'accepted':
-            return
+        if self.property_id.state == 'canceled':
+            raise UserError('Canceled properties cannot be accepted.')
         if self.price<(self.property_id.expected_price*0.90):
             raise ValidationError("Selling price cannot be lower than 90% of the expected price.")
         self.write({'status': 'accepted'})
@@ -39,23 +40,27 @@ class EstatePropertyOffer(models.Model):
         other_offers.write({'status': 'refused'})
         self.property_id.selling_price = self.price
         self.property_id.buyer_id=self.partner_id
-        self.property_id.state = 'sold'
+        self.property_id.state = 'offer accepted'
 
     def action_refuse(self):
         self.ensure_one()
-        if self.status == 'refused':
-            return
+        if self.property_id.state == 'canceled':
+            raise UserError('Canceled properties cannot be refused.')
         self.write({'status': 'refused'})
         self.property_id.selling_price = 0.0
         self.property_id.buyer_id = ''
+        self.property_id.state='offer received'
 
 
 class EstatePropertyTag(models.Model):
     _name = "estate.property.tag"
     _description = "Property Tag"
+    _order = "name"
 
     name = fields.Char(string="Name", required=True)
     _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
+    color = fields.Integer(string="Color")
+
 
     def active_save_tag(self):
         self.ensure_one()
@@ -67,10 +72,12 @@ class EstatePropertyTag(models.Model):
 class EstatePropertyType(models.Model):
     _name = "estate.property.type"
     _description = "Property Type"
+    _order = "name"
 
     name = fields.Char(string="Name", required=True)
     property_ids=fields.One2many('estate.property','property_type_id',string='Properties')
     _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
+
 
 
     def active_save_type(self):
@@ -83,6 +90,8 @@ class EstatePropertyType(models.Model):
 class EstateProperty(models.Model):
     _name = "estate.property"
     _description='Property'
+    _order = "id desc"
+
 
     last_seen = fields.Datetime("Last Seen", default=fields.Datetime.now)
     name = fields.Char(string="Title", required=True)
@@ -105,7 +114,7 @@ class EstateProperty(models.Model):
         ],
     )
     facades = fields.Integer(string="Facades")
-    state=fields.Selection(string='Status',copy=False,default="new",
+    state=fields.Selection(string='Status',readonly=True,copy=False,default="new",
                            selection=[
                                ('new',"New"),
                                ('offer received',"Offer Received"),
@@ -124,6 +133,7 @@ class EstateProperty(models.Model):
     total_area=fields.Float(compute='_compute_area_total',store=True)
     amount=fields.Float()
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer', store=True)
+    sequence = fields.Integer('Sequence', default=1)
 
     @api.depends('living_area','garden_area')
     def _compute_area_total(self):
@@ -140,6 +150,8 @@ class EstateProperty(models.Model):
                     raise UserError('The price must be strictly positive!')
             else:
                 property.best_offer = 0.0
+            if len(property.offer_ids)>0:
+                property.state = 'offer received'
 
     @api.onchange("garden")
     def _compute_onchange(self):

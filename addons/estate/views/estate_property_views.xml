@@ -5,59 +5,66 @@
         <field name="arch" type="xml">
             <form string="Properties">
                 <sheet>
-                    <header>
-                        <button name="action_sold_" type="object" string="SOLD"  class="oe_highlight" />
-                        <button name="action_canceled_" type="object" string="CANCELED" class="oe_button"/>
-                    </header>
-                    <button name="action_save" type="object" string="SAVE" class="oe_highlight"/>
-                    <group>
+                    <button class="btn btn-primary" name="action_save" type="object">
+                        <span>SAVE</span>
+                    </button>
+                       <header>
+                            <button name="action_sold_" type="object" string="SOLD" class="oe_highlight"
+                                    invisible="state in ('sold', 'canceled')"/>
+                            <button name="action_canceled_" type="object" string="CANCELED" class="oe_button"
+                                    invisible="state in ('sold', 'canceled')"/>
+                            <field name="state" widget="statusbar" statusbar_visible="new,offer received,offer accepted,sold"/>
+                        </header>
+                    <sheet>
                         <group>
-                            <field name="name"/>
-                            <field name="tag_ids" widget="many2many_tags"/>
-                            <field name="postcode"/>
-                            <field name="date_availability"/>
-                            <field name="property_type_id"/>
-                        </group>
-                        <group>
-                            <field name="expected_price"/>
-                            <field name="best_offer"/>
-                            <field name="selling_price"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Description">
-                            <field name="description"/>
                             <group>
-                                <field name="bedrooms"/>
-                                <field name="living_area"/>
-                                <field name="facades"/>
-                                <field name="garage"/>
-                                <field name="garden"/>
-                                <field name="garden_area"/>
-                                <field name="garden_orientation"/>
-                                <field name="total_area"/>
+                                <field name="name"/>
+                                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                <field name="postcode"/>
+                                <field name="date_availability"/>
+                                <field name="property_type_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             </group>
-                        </page>
-                        <page string="Offers">
-                            <field name="offer_ids">
-                                <tree string="Offers">
-                                    <field name="price"/>
-                                    <field name="partner_id"/>
-                                    <field name="validity"/>
-                                    <field name="date_deadline"/>
-                                    <field name="status"/>
-                                    <button name="action_accept" type="object" string="Accept" icon="fa-check" class="oe_highlight"/>
-                                    <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Other Info">
                             <group>
-                                <field name="buyer_id"/>
-                                <field name="seller_id"/>
+                                <field name="expected_price"/>
+                                <field name="best_offer"/>
+                                <field name="selling_price"/>
                             </group>
-                        </page>
-                    </notebook>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description"/>
+                                <group>
+                                    <field name="bedrooms"/>
+                                    <field name="living_area"/>
+                                    <field name="facades"/>
+                                    <field name="garage"/>
+                                    <field name="garden"/>
+                                    <field name="garden_area"/>
+                                    <field name="garden_orientation"/>
+                                    <field name="total_area"/>
+                                </group>
+                            </page>
+                            <page string="Offers">
+                                <field name="offer_ids">
+                                    <tree string="Offers">
+                                        <field name="price"/>
+                                        <field name="partner_id"/>
+                                        <field name="validity"/>
+                                        <field name="date_deadline"/>
+                                        <field name="status"/>
+                                        <button name="action_accept" type="object" string="Accept" icon="fa-check" class="oe_highlight"/>
+                                        <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Other Info">
+                                <group>
+                                    <field name="buyer_id"/>
+                                    <field name="seller_id"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
                 </sheet>
             </form>
         </field>
@@ -119,6 +126,7 @@
                     <page string="Properties">
                         <field name="property_ids">
                             <tree string="Properties">
+                                <field name="sequence" widget="handle"/>
                                 <field name="name"/>
                                 <field name="expected_price"/>
                                 <field name="state"/>

@@ -13,7 +13,7 @@
                 <field name="garden_orientation"/>
 
                 <filter string="Available Properties" name="available_properties"
-                        domain="[('state', 'in', ['new', 'offer_received'])]"/>
+                        domain="[('state', 'in', ['new', 'offer received', 'offer accepted', 'sold', 'canceled'])]"/>
 
                 <filter string="With Garden" name="garden" domain="[('garden', '=', True)]"/>
                 <filter string="No Garden" name="no_garden" domain="[('garden', '=', False)]"/>

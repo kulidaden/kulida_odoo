@@ -69,7 +69,9 @@ class EstatePropertyType(models.Model):
     _description = "Property Type"
 
     name = fields.Char(string="Name", required=True)
+    property_ids=fields.One2many('estate.property','property_type_id',string='Properties')
     _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
+
 
     def active_save_type(self):
         self.ensure_one()
@@ -83,7 +85,7 @@ class EstateProperty(models.Model):
     _description='Property'
 
     last_seen = fields.Datetime("Last Seen", default=fields.Datetime.now)
-    name = fields.Char(string="Estate", required=True, default='Unknown')
+    name = fields.Char(string="Title", required=True)
     date_availability = fields.Date(string="Availability Date",
                                     default=lambda self: datetime.today() + timedelta(days=90),copy=False)
     postcode = fields.Char(string="Postcode")
@@ -103,7 +105,7 @@ class EstateProperty(models.Model):
         ],
     )
     facades = fields.Integer(string="Facades")
-    state=fields.Selection(string='Status',required=True,copy=False,default="new",
+    state=fields.Selection(string='Status',copy=False,default="new",
                            selection=[
                                ('new',"New"),
                                ('offer received',"Offer Received"),

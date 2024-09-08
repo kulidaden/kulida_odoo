@@ -110,13 +110,22 @@
         <field name="name">estate.property.type.form</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
-            <form string="Property Type">
-                <sheet>
+            <form>
+                <group>
                     <button name="active_save_type" type="object" string="SAVE" class="oe_highlight"/>
-                    <group>
-                        <field name="name"/>
-                    </group>
-                </sheet>
+                </group>
+                <field name="name"/>
+                <notebook>
+                    <page string="Properties">
+                        <field name="property_ids">
+                            <tree string="Properties">
+                                <field name="name"/>
+                                <field name="expected_price"/>
+                                <field name="state"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </form>
         </field>
     </record>

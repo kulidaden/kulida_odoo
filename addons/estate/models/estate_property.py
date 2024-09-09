@@ -62,13 +62,6 @@ class EstatePropertyTag(models.Model):
     color = fields.Integer(string="Color")
 
 
-    def active_save_tag(self):
-        self.ensure_one()
-        self.write({
-            'name':self.name,
-        })
-
-
 class EstatePropertyType(models.Model):
     _name = "estate.property.type"
     _description = "Property Type"
@@ -77,14 +70,6 @@ class EstatePropertyType(models.Model):
     name = fields.Char(string="Name", required=True)
     property_ids=fields.One2many('estate.property','property_type_id',string='Properties')
     _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
-
-
-
-    def active_save_type(self):
-        self.ensure_one()
-        self.write({
-            'name':self.name,
-        })
 
 
 class EstateProperty(models.Model):
@@ -134,6 +119,7 @@ class EstateProperty(models.Model):
     amount=fields.Float()
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer', store=True)
     sequence = fields.Integer('Sequence', default=1)
+    editable=fields.Boolean(string='Editable')
 
     @api.depends('living_area','garden_area')
     def _compute_area_total(self):
@@ -162,38 +148,6 @@ class EstateProperty(models.Model):
             self.garden_orientation = False
             self.garden_area = False
 
-    def action_save(self):
-        self.ensure_one()
-        if self.expected_price<1:
-            raise UserError('The expected price must be strictly positive!')
-        if self.selling_price<0:
-            raise UserError('The selling price must be strictly positive!')
-        self.write({
-            'name': self.name,
-            'last_seen': self.last_seen,
-            'date_availability': self.date_availability,
-            'postcode': self.postcode,
-            'expected_price': self.expected_price,
-            'garage': self.garage,
-            'selling_price': self.selling_price,
-            'garden': self.garden,
-            'bedrooms': self.bedrooms,
-            'active': self.active,
-            'living_area': self.living_area,
-            'garden_orientation': self.garden_orientation,
-            'facades': self.facades,
-            'state': self.state,
-            'garden_area': self.garden_area,
-            'description': self.description,
-            'property_type_id': self.property_type_id,
-            'buyer_id': self.buyer_id,
-            'seller_id': self.seller_id,
-            'tag_ids': self.tag_ids,
-            'offer_ids': self.offer_ids,
-            'total_area': self.total_area,
-            'amount': self.amount,
-            'best_offer': self.best_offer
-        })
 
     def action_sold_(self):
         for record in self:
@@ -206,3 +160,4 @@ class EstateProperty(models.Model):
             if record.state == 'sold':
                 raise UserError('Sold properties cannot be canceled.')
             record.state = 'canceled'
+            record.selling_price=0.0

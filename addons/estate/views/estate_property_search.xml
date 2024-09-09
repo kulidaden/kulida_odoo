@@ -9,12 +9,13 @@
                 <field name="expected_price"/>
                 <field name="selling_price"/>
                 <field name="bedrooms"/>
-                <field name="living_area"/>
+                <field name="living_area" filter_domain="[('living_area', '>=', self)]"/>
                 <field name="garden_orientation"/>
 
                 <filter string="Available Properties" name="available_properties"
-                        domain="[('state', 'in', ['new', 'offer received', 'offer accepted', 'sold', 'canceled'])]"/>
-
+                        domain="[('state', 'in', ['new', 'offer received', 'offer accepted', 'sold', 'canceled'])]"
+                        context="{'default_filter': 'available_properties'}"
+                        help="Show only available properties"/>
                 <filter string="With Garden" name="garden" domain="[('garden', '=', True)]"/>
                 <filter string="No Garden" name="no_garden" domain="[('garden', '=', False)]"/>
 

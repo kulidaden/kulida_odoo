@@ -5,9 +5,6 @@
         <field name="arch" type="xml">
             <form string="Properties">
                 <sheet>
-                    <button class="btn btn-primary" name="action_save" type="object">
-                        <span>SAVE</span>
-                    </button>
                        <header>
                             <button name="action_sold_" type="object" string="SOLD" class="oe_highlight"
                                     invisible="state in ('sold', 'canceled')"/>
@@ -21,7 +18,7 @@
                                 <field name="name"/>
                                 <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                 <field name="postcode"/>
-                                <field name="date_availability"/>
+                                <field name="date_availability" invisible="1"/>
                                 <field name="property_type_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             </group>
                             <group>
@@ -39,21 +36,23 @@
                                     <field name="facades"/>
                                     <field name="garage"/>
                                     <field name="garden"/>
-                                    <field name="garden_area"/>
-                                    <field name="garden_orientation"/>
+                                    <field name="garden_area" invisible="not garden"/>
+                                    <field name="garden_orientation" invisible="not garden"/>
                                     <field name="total_area"/>
                                 </group>
                             </page>
                             <page string="Offers">
-                                <field name="offer_ids">
-                                    <tree string="Offers">
+                                <field name="offer_ids" readonly="state in ('offer accepted','sold','canceled')">
+                                    <tree string="Offers" editable="bottom" decoration-success="status == 'accepted'" decoration-danger="status == 'refused'">
                                         <field name="price"/>
                                         <field name="partner_id"/>
                                         <field name="validity"/>
                                         <field name="date_deadline"/>
                                         <field name="status"/>
-                                        <button name="action_accept" type="object" string="Accept" icon="fa-check" class="oe_highlight"/>
-                                        <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button"/>
+                                        <button name="action_accept" type="object" string="Accept" icon="fa-check" class="oe_highlight"
+                                        invisible="status in ('accepted', 'refused')"/>
+                                        <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button"
+                                        invisible="status in ('accepted', 'refused')"/>
                                     </tree>
                                 </field>
                             </page>
@@ -74,10 +73,9 @@
         <field name="name">estate.property.tree</field>
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
-            <tree string="Properties">
+            <tree string="Properties" decoration-success="state == 'offer received' or state == 'offer accepted'" decoration-muted="state == 'sold'" decoration-bf="state == 'offer accepted'">
                 <field name="name"/>
                 <field name="postcode"/>
-                <field name="state"/>
                 <field name="expected_price"/>
                 <field name="selling_price"/>
                 <field name="bedrooms"/>
@@ -92,6 +90,7 @@
                 <field name="date_availability"/>
                 <field name="property_type_id"/>
                 <field name="tag_ids"/>
+                <field name="state" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -101,6 +100,7 @@
         <field name="res_model">estate.property</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_estate_property_tree"/>
+        <field name="context">{'search_default_available_properties': True, 'search_default_current': True}</field>
     </record>
 
     <record id="view_estate_property_type_tree" model="ir.ui.view">
@@ -118,9 +118,6 @@
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <form>
-                <group>
-                    <button name="active_save_type" type="object" string="SAVE" class="oe_highlight"/>
-                </group>
                 <field name="name"/>
                 <notebook>
                     <page string="Properties">
@@ -149,7 +146,7 @@
         <field name="name">estate.property.tag.tree</field>
         <field name="model">estate.property.tag</field>
         <field name="arch" type="xml">
-            <tree string="Property Tags">
+            <tree string="Property Tags" editable="bottom">
                 <field name="name"/>
             </tree>
         </field>
@@ -161,7 +158,6 @@
         <field name="arch" type="xml">
             <form string="Property Tags">
                 <sheet>
-                    <button name="active_save_tag" type="object" string="SAVE" class="oe_highlight"/>
                     <group>
                         <field name="name"/>
                     </group>

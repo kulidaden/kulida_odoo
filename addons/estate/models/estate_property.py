@@ -18,6 +18,7 @@ class EstatePropertyOffer(models.Model):
     property_id = fields.Many2one('estate.property', string='Property')
     validity=fields.Integer(string='Validity',default=7)
     date_deadline=fields.Date(string="Deadline",compute='_compute_deadline',store=True,readonly=False)
+    property_type_id = fields.Many2one('estate.property.type',string='Property Type', related='property_id.property_type_id', store=True)
 
     @api.depends('validity')
     def _compute_deadline(self):
@@ -68,9 +69,24 @@ class EstatePropertyType(models.Model):
     _order = "name"
 
     name = fields.Char(string="Name", required=True)
-    property_ids=fields.One2many('estate.property','property_type_id',string='Properties')
     _sql_constraints = [('unique_name', 'unique(name)', 'The name must be unique!')]
+    property_ids=fields.One2many('estate.property','property_type_id',string='Properties')
+    offer_ids = fields.One2many('estate.property.offer', 'property_type_id', string='Offers', readonly=True)
+    offer_count = fields.Integer(string='Offers Count', compute='_compute_offer_count')
 
+    @api.depends('offer_ids')
+    def _compute_offer_count(self):
+        for record in self:
+            record.offer_count = str(len(record.offer_ids))+" "
+
+    def action_view_offers(self):
+        return {
+            'name': 'Offers',
+            'type': 'ir.actions.act_window',
+            'res_model': 'estate.property.offer',
+            'view_mode': 'tree,form',
+            'domain': [('property_type_id', '=', self.id)],
+        }
 
 class EstateProperty(models.Model):
     _name = "estate.property"

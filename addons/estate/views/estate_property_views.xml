@@ -53,6 +53,7 @@
                                         invisible="status in ('accepted', 'refused')"/>
                                         <button name="action_refuse" type="object" string="Refuse" icon="fa-times" class="oe_button"
                                         invisible="status in ('accepted', 'refused')"/>
+
                                     </tree>
                                 </field>
                             </page>
@@ -113,12 +114,22 @@
         </field>
     </record>
 
-    <record id="view_estate_property_type_form" model="ir.ui.view">
+<record id="view_estate_property_type_form" model="ir.ui.view">
         <field name="name">estate.property.type.form</field>
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <form>
-                <field name="name"/>
+                <group>
+                    <field name="name"/>
+                </group>
+                <button name="action_view_offers" type="object" string="View Offers" class="oe_stat_button">
+                    <div>
+                        <span class="o_stat_value">
+                            <field name="offer_count"/>
+                        </span>
+                        <span class="o_stat_text">Offers</span>
+                    </div>
+                </button>
                 <notebook>
                     <page string="Properties">
                         <field name="property_ids">
@@ -130,9 +141,26 @@
                             </tree>
                         </field>
                     </page>
+                    <page string="Offers">
+                        <field name="offer_ids">
+                            <tree string="Offers" decoration-success="status == 'accepted'" decoration-danger="status == 'refused'">
+                                <field name="price"/>
+                                <field name="partner_id"/>
+                                <field name="date_deadline"/>
+                                <field name="status"/>
+                            </tree>
+                        </field>
+                    </page>
                 </notebook>
             </form>
         </field>
+    </record>
+
+    <record id="action_property_offers" model="ir.actions.act_window">
+        <field name="name">Property Offers</field>
+        <field name="res_model">estate.property.offer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('property_type_id', '=', active_id)]</field>
     </record>
 
     <record id="estate_property_type_action" model="ir.actions.act_window">

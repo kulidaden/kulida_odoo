@@ -20,10 +20,18 @@ class EstatePropertyOffer(models.Model):
     date_deadline=fields.Date(string="Deadline",compute='_compute_deadline',store=True,readonly=False)
     property_type_id = fields.Many2one('estate.property.type',string='Property Type', related='property_id.property_type_id', store=True)
 
+    @api.model
+    def create(self, vals):
+        property_obj = self.env['estate.property'].browse(vals['property_id'])
+        if vals.get('price', 0) < property_obj.expected_price:
+            raise UserError(f'The offer must be higher than {property_obj.expected_price}')
+        return super(EstatePropertyOffer, self).create(vals)
+
     @api.depends('validity')
     def _compute_deadline(self):
         for deadline in self:
             deadline.date_deadline=datetime.today() + timedelta(days=deadline.validity)
+
 
     def action_accept(self):
         self.ensure_one()
@@ -31,8 +39,6 @@ class EstatePropertyOffer(models.Model):
             raise UserError('The expected price must be strictly positive!')
         if self.property_id.state == 'canceled':
             raise UserError('Canceled properties cannot be accepted.')
-        if self.price<(self.property_id.expected_price*0.90):
-            raise ValidationError("Selling price cannot be lower than 90% of the expected price.")
         self.write({'status': 'accepted'})
         other_offers = self.search([
             ('property_id', '=', self.property_id.id),
@@ -77,7 +83,7 @@ class EstatePropertyType(models.Model):
     @api.depends('offer_ids')
     def _compute_offer_count(self):
         for record in self:
-            record.offer_count = str(len(record.offer_ids))+" "
+            record.offer_count = len(record.offer_ids)
 
     def action_view_offers(self):
         return {
@@ -136,6 +142,11 @@ class EstateProperty(models.Model):
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer', store=True)
     sequence = fields.Integer('Sequence', default=1)
     editable=fields.Boolean(string='Editable')
+
+    @api.ondelete(at_uninstall=False)
+    def _compute_delete(self):
+        if self.state!='new' and self.state!='canceled':
+            raise UserError('Only new and canceled properties can be deleted!')
 
     @api.depends('living_area','garden_area')
     def _compute_area_total(self):

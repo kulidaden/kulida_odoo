@@ -135,13 +135,13 @@ class EstateProperty(models.Model):
     property_type_id = fields.Many2one('estate.property.type', string="Property Type")
     buyer_id = fields.Many2one('res.partner', string="Buyer",readonly=True)
     seller_id = fields.Many2one('res.partner', string="Salesman", index=True, readonly=True, default=lambda self: self.env.user.partner_id.id)
+    new_seller_id=fields.Many2one('res.users', string="Salesman", index=True, readonly=True, default=lambda self: self.env.user.partner_id.id)
     tag_ids = fields.Many2many('estate.property.tag', string="Tags")
     offer_ids = fields.One2many('estate.property.offer', 'property_id', string='Offers')
     total_area=fields.Float(compute='_compute_area_total',store=True)
     amount=fields.Float()
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer', store=True)
     sequence = fields.Integer('Sequence', default=1)
-    editable=fields.Boolean(string='Editable')
 
     @api.ondelete(at_uninstall=False)
     def _compute_delete(self):
@@ -188,3 +188,4 @@ class EstateProperty(models.Model):
                 raise UserError('Sold properties cannot be canceled.')
             record.state = 'canceled'
             record.selling_price=0.0
+

@@ -143,10 +143,10 @@ class EstateProperty(models.Model):
     best_offer = fields.Float(string='Best Offer', compute='_compute_best_offer', store=True)
     sequence = fields.Integer('Sequence', default=1)
 
-    @api.ondelete(at_uninstall=False)
-    def _compute_delete(self):
-        if self.state!='new' and self.state!='canceled':
-            raise UserError('Only new and canceled properties can be deleted!')
+    # @api.ondelete(at_uninstall=False)
+    # def _compute_delete(self):
+    #     if self.state!='new' and self.state!='canceled':
+    #         raise UserError('Only new and canceled properties can be deleted!')
 
     @api.depends('living_area','garden_area')
     def _compute_area_total(self):

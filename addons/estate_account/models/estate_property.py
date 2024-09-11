@@ -1,17 +1,13 @@
 from odoo import models,fields, Command
-import logging
 
 
 class EstateAccount(models.Model):
     _inherit = 'estate.property'
 
     account_move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
-    _logger = logging.getLogger(__name__)
 
     def action_sold_(self):
         super().action_sold_()
-
-        self._logger.info('Creating invoice for property %s', self.name)
 
         if not self.buyer_id:
             raise models.ValidationError("No buyer assigned to this property!")

@@ -188,4 +188,3 @@ class EstateProperty(models.Model):
                 raise UserError('Sold properties cannot be canceled.')
             record.state = 'canceled'
             record.selling_price=0.0
-

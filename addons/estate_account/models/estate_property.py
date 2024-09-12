@@ -1,4 +1,4 @@
-from odoo import models,fields, Command
+from odoo import models, fields, Command
 
 
 class EstateAccount(models.Model):
@@ -14,7 +14,7 @@ class EstateAccount(models.Model):
 
         commission_amount = self.selling_price * 0.06
 
-        invoice_vals={
+        invoice_vals = {
             'partner_id': self.buyer_id.id,
             'move_type': 'out_invoice',
             'invoice_date': fields.Date.today(),
@@ -32,7 +32,7 @@ class EstateAccount(models.Model):
             ],
         }
 
-        account_move=self.env['account.move'].create(invoice_vals)
+        account_move = self.env['account.move'].create(invoice_vals)
 
-        self.account_move_id=account_move.id
+        self.account_move_id = account_move.id
 

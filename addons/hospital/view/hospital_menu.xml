@@ -1,0 +1,8 @@
+<odoo>
+    <menuitem id="menu_hospital_root" name="Hospital"/>
+    <menuitem id="menu_directory_of_diseases" name="Directory of Diseases"
+              parent="menu_hospital_root"/>
+    <menuitem id="menu_diseases" name="Diseases"
+              parent="menu_directory_of_diseases"
+              action="directory_of_diseases_action"/>
+</odoo>

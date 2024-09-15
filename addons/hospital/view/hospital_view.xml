@@ -1,0 +1,43 @@
+<odoo>
+    <record id="view_directory_of_diseases_form" model="ir.ui.view">
+        <field name="name">directory.of.diseases.form</field>
+        <field name="model">directory.of.diseases</field>
+        <field name="arch" type="xml">
+            <form string="Directory of Diseases">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="type_of_diseases"/>
+                        <field name="description"/>
+                        <field name="classification"/>
+                        <field name="method_diagnosis"/>
+                        <field name="treatment"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_directory_of_diseases_tree" model="ir.ui.view">
+        <field name="name">directory.of.diseases.tree</field>
+        <field name="model">directory.of.diseases</field>
+        <field name="arch" type="xml">
+            <tree string="Directory of Diseases">
+                <field name="name"/>
+                <field name="type_of_diseases"/>
+                <field name="description"/>
+                <field name="classification"/>
+                <field name="method_diagnosis"/>
+                <field name="treatment"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="directory_of_diseases_action" model="ir.actions.act_window">
+        <field name="name">Directory of Diseases</field>
+        <field name="res_model">directory.of.diseases</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_directory_of_diseases_tree"/>
+        <field name="target">current</field>
+    </record>
+</odoo>

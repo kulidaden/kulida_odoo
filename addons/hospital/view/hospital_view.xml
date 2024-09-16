@@ -32,6 +32,9 @@
                             </group>
                             <group string="Персональний лікар">
                                 <field name="personal_docktor"/>
+                                <field name="doctor_name" readonly="1"/>
+                                <field name="doctor_specialisation" readonly="1"/>
+                                <field name="doctor_type" readonly="1"/>
                             </group>
                         </group>
                     </group>
@@ -82,7 +85,6 @@
                 </group>
                 <group>
                     <field name="relationship"/>
-                    <field name="address"/>
                 </group>
                 <group>
                     <field name="patient_ids" widget="many2many_tags"/>

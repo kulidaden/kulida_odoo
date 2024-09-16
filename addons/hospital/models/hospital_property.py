@@ -40,12 +40,16 @@ class Patient(models.Model):
     contact_pers_id=fields.Many2one('contact.person', string='Контакстна особа')
     personal_docktor=fields.Many2one('docktor', string='Персональний лікар')
     diagnosis_ids = fields.One2many('diagnosis', 'patient_ids', string='Діагнози')
-    contact_name = fields.Char(related='contact_pers_id.name', string='Ім\'я контактної особи', store=True)
-    contact_mobile_phone = fields.Integer(related='contact_pers_id.mobile_phone', string='Телефон контактної особи', store=True)
 
+    contact_name = fields.Char(related='contact_pers_id.name', string='ПІБ', store=True)
+    contact_mobile_phone = fields.Integer(related='contact_pers_id.mobile_phone', string='Телефон контактної особи', store=True)
     contact_email = fields.Char(related='contact_pers_id.email', string='Електронна пошта контактної особи', store=True)
     contact_relationship = fields.Selection(related='contact_pers_id.relationship', string='Стосунки з пацієнтом',
                                        store=True)
+    doctor_id = fields.Many2one('docktor', string='Лікар')
+    doctor_name = fields.Char(related='doctor_id.name', string='ПІБ лікаря', store=True)
+    doctor_specialisation = fields.Selection(related='doctor_id.specialisation', string='Спеціальність лікаря', store=True)
+    doctor_type = fields.Selection(related='doctor_id.doctor_type', string='Тип лікаря', store=True)
 
     @api.depends('birthday')
     def _compute_age(self):
@@ -71,7 +75,6 @@ class ContactPerson(models.Model):
         ('friend', 'Друг'),
         ('other', 'Інший')
     ], string='Відношення до пацієнта', required=True)
-    address = fields.Text(string='Адреса контактної особи')
     patient_ids = fields.One2many('patient', 'contact_pers_id', string='Пацієнти')
 
 class Docktor(models.Model):
@@ -146,7 +149,7 @@ class Docktor(models.Model):
         ('лікар-лаборант-цитолог', 'Лікар-лаборант-цитолог')
 
     ])
-    doctor_mentor=fields.Selection(string='Тип лікаря',selection=[
+    doctor_type=fields.Selection(string='Тип лікаря',selection=[
         ('лікар-ментор', 'Лікар-ментор'),
         ('інтерн', 'Інтерн')
     ])

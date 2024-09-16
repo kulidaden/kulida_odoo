@@ -2,3 +2,13 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hospital_property_user,access.hospital.property.user,model_hospital_property,base.group_user,1,1,1,1
 access_directory_of_diseases_user,access.directory.of.diseases.user,model_directory_of_diseases,base.group_user,1,1,1,1
 access_directory_of_diseases_manager,access.directory.of.diseases.manager,model_directory_of_diseases,base.group_system,1,1,1,1
+access_classification_user,access.classification.user,model_classification,base.group_user,1,1,1,1
+access_type_of_diagnosis_user,access.type.of.diagnosis.user,model_type_of_diagnosis,base.group_user,1,1,1,1
+access_patient_user,access.patient.user,model_patient,base.group_user,1,1,1,1
+access_person_user,access.person.user,model_person,base.group_user,1,1,1,1
+access_docktor_user,access.docktor.user,model_docktor,base.group_user,1,1,1,1
+access_diagnosis_user,access.diagnosis.user,model_diagnosis,base.group_user,1,1,1,1
+access_contact_person_user,access.contact.person.user,model_contact_person,base.group_user,1,1,1,1
+
+
+

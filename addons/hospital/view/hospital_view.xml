@@ -1,4 +1,97 @@
 <odoo>
+    <record id="view_patient_form" model="ir.ui.view">
+        <field name="name">patient.form"</field>
+        <field name="model">patient</field>
+        <field name="arch" type="xml">
+            <form string="Patient">
+                <sheet>
+                    <group>
+                        <group>
+                            <group string="Дані про пацієнта">
+                                <field name="name"/>
+                                <field name="sex"/>
+                                <field name="birthday"/>
+                                <field name="age"/>
+                            </group>
+                            <group string="Паспортні дані">
+                                <field name="choose_id_pass"/>
+                                <field name="id_card" invisible="choose_id_pass == 'паспорт'"/>
+                                <field name="id_code" invisible="choose_id_pass == 'паспорт'"/>
+                                <field name="numb_pass" invisible="choose_id_pass == 'id карта'"/>
+                                <field name="record_numb" invisible="choose_id_pass == 'id карта'"/>
+                                <field name="issuing_body"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group string="Контактна особа">
+                                <field name="contact_pers_id"/>
+                                <field name="contact_name" readonly="1"/>
+                                <field name="contact_mobile_phone" readonly="1"/>
+                                <field name="contact_email" readonly="1"/>
+                                <field name="contact_relationship" readonly="1"/>
+                            </group>
+                            <group string="Персональний лікар">
+                                <field name="personal_docktor"/>
+                            </group>
+                        </group>
+                    </group>
+                    <group string="Діагнози пацієнта">
+                        <field name="diagnosis_ids">
+                            <tree>
+                                <field name="diseases_name"/>
+                                <field name="injury_name"/>
+                                <field name="appointment_of_treatment"/>
+                                <field name="data_of_diseases"/>
+                            </tree>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_patient_tree" model="ir.ui.view">
+        <field name="name">patient.tree</field>
+        <field name="model">patient</field>
+        <field name="arch" type="xml">
+            <tree string="Пацієнт">
+                <field name="name"/>
+                <field name="personal_docktor"/>
+                <field name="diagnosis_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="patient_action" model="ir.actions.act_window">
+        <field name="name">Patient</field>
+        <field name="res_model">patient</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_patient_tree"/>
+    </record>
+
+    <record id="view_contact_person_form" model="ir.ui.view">
+    <field name="name">contact.person.form</field>
+    <field name="model">contact.person</field>
+    <field name="arch" type="xml">
+        <form string="Contact Person">
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="mobile_phone"/>
+                    <field name="email"/>
+                </group>
+                <group>
+                    <field name="relationship"/>
+                    <field name="address"/>
+                </group>
+                <group>
+                    <field name="patient_ids" widget="many2many_tags"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
     <record id="view_directory_of_diseases_form" model="ir.ui.view">
         <field name="name">directory.of.diseases.form</field>
         <field name="model">directory.of.diseases</field>
@@ -9,8 +102,8 @@
                         <field name="name"/>
                         <field name="type_of_diseases"/>
                         <field name="description"/>
-                        <field name="classification"/>
-                        <field name="method_diagnosis"/>
+                        <field name="classification_name"/>
+                        <field name="method_diagnosis_name"/>
                         <field name="treatment"/>
                     </group>
                 </sheet>
@@ -26,8 +119,8 @@
                 <field name="name"/>
                 <field name="type_of_diseases"/>
                 <field name="description"/>
-                <field name="classification"/>
-                <field name="method_diagnosis"/>
+                <field name="classification_name"/>
+                <field name="method_diagnosis_name"/>
                 <field name="treatment"/>
             </tree>
         </field>

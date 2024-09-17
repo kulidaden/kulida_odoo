@@ -1,8 +1,15 @@
 <odoo>
     <menuitem id="menu_hospital_root" name="Лікарня"/>
+    <menuitem id="menu_docktor" name="Лікарі"
+              parent="menu_hospital_root"/>
+    <menuitem id="menu_sub_docktor" name="Лікарі"
+              parent="menu_docktor"
+              action="docktor_action"/>
+    <menuitem id="menu_docktor_visit" name="Відвідування"
+              parent="menu_docktor"
+              action="docktor_visit_action"/>
     <menuitem id="menu_patient" name="Пацієнти"
-              parent="menu_hospital_root"
-              action="patient_action"/>
+              parent="menu_hospital_root"/>
     <menuitem id="menu_sub_patient" name="Пацієнти"
               parent="menu_patient"
               action="patient_action"/>

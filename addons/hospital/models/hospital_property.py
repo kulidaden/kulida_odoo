@@ -157,6 +157,10 @@ class Docktor(models.Model):
         ('лікар-лаборант-цитолог', 'Лікар-лаборант-цитолог')
 
     ])
+    intern = fields.Boolean(string='Інтерн')
+    intern_id = fields.Many2one('intern', string='Інтерн')
+    intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
+    intern_number = fields.Char(related='intern_id.mobile_phone', string='Номер телефону')
 
 
 class Intern(models.Model):
@@ -172,7 +176,8 @@ class Diagnosis(models.Model):
     doctor_ids = fields.Many2one('docktor', string='Лікар')
     intern_ids = fields.Many2one('intern',string='Інтерн')
     patient_ids = fields.Many2one('patient', string='Пацієнт')
-    diseases_name = fields.Many2one('directory.of.diseases', string='Назва хвороби' )
+    diseases_name = fields.Many2one('directory.of.diseases', string='Назва хвороби')
+    name=fields.Char(related='diseases_name.name')
     intern = fields.Boolean(string='Інтерн')
     injury_name = fields.Char(string='Назва травми')
     appointment_of_treatment = fields.Text(string='Призначення лікування')
@@ -184,19 +189,23 @@ class Diagnosis(models.Model):
 
     intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True)
 
-    @api.onchange('diseases')
-    def _choose_diseases(self):
-        if self.diseases:
-            self.diseases_name=" "
-        else:
-            self.diseases_name=False
 
-    @api.onchange('injury')
-    def _choose_injury(self):
-        if self.injury:
-            self.injury_name = " "
-        else:
-            self.injury_name = False
+class DiseaseType(models.Model):
+    _name = 'disease.type'
+    _description = 'Disease Type'
+
+    name = fields.Char(string='Тип хвороби', required=True)
+    parent_id = fields.Many2one('disease.type', string='Батьківський тип')
+    child_ids = fields.One2many('disease.type', 'parent_id', string='Підтипи')
+    complete_name = fields.Char(compute='_compute_complete_name', string='Повна назва', store=True)
+
+    @api.depends('name', 'parent_id')
+    def _compute_complete_name(self):
+        for record in self:
+            if record.parent_id:
+                record.complete_name = f"{record.parent_id.complete_name} / {record.name}"
+            else:
+                record.complete_name = record.name
 
 
 class DirectoryOfDiseases(models.Model):
@@ -204,8 +213,21 @@ class DirectoryOfDiseases(models.Model):
     _description = 'Directory of diseases'
 
     name = fields.Char(string='Назва хвороби', required=True)
-    type_of_diseases = fields.Char(string='Тип хвороби', required=True)
+    type_of_diseases = fields.Many2one('disease.type', string='Тип хвороби', required=True)
+    complete_disease_type = fields.Char(related='type_of_diseases.complete_name', string='Повний тип хвороби',store=True)
     description = fields.Text(string='Опис хвороби', required=True)
     classification_name = fields.Many2one('classification', string='Класифікація', required=True)
     method_diagnosis_name = fields.Char(string='Метод діагностики', required=True)
     treatment = fields.Text(string='Лікування')
+
+
+class DocktorVisit(models.Model):
+    _name = 'docktor.visit'
+    _description = "Docktor's visit"
+
+    patient_ids=fields.Many2one('patient',string='Пацієнт')
+    docktor_ids=fields.Many2one('docktor',string='Лікар')
+    diagnosis_ids=fields.Many2one('diagnosis',string='Діагноз')
+    name = fields.Char(related='docktor_ids.name')
+    time=fields.Datetime(string='Дата/Час')
+    recommendation=fields.Text(string='Рекомендації')

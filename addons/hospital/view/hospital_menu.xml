@@ -3,7 +3,13 @@
     <menuitem id="menu_patient" name="Пацієнти"
               parent="menu_hospital_root"
               action="patient_action"/>
+    <menuitem id="menu_sub_patient" name="Пацієнти"
+              parent="menu_patient"
+              action="patient_action"/>
+    <menuitem id="menu_diagnosis" name="Діагнози"
+              parent="menu_patient"
+              action="diagnosis_action"/>
     <menuitem id="menu_directory_of_diseases" name="Довідник хвороб"
               parent="menu_hospital_root"
-            action="directory_of_diseases_action"/>
+              action="directory_of_diseases_action"/>
 </odoo>

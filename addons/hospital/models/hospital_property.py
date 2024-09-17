@@ -183,6 +183,7 @@ class Diagnosis(models.Model):
     doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True)
 
     intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True)
+
     @api.onchange('diseases')
     def _choose_diseases(self):
         if self.diseases:
@@ -193,10 +194,9 @@ class Diagnosis(models.Model):
     @api.onchange('injury')
     def _choose_injury(self):
         if self.injury:
-            self.injury_name=" "
+            self.injury_name = " "
         else:
-            self.injury_name=False
-
+            self.injury_name = False
 
 
 class DirectoryOfDiseases(models.Model):
@@ -206,7 +206,6 @@ class DirectoryOfDiseases(models.Model):
     name = fields.Char(string='Назва хвороби', required=True)
     type_of_diseases = fields.Char(string='Тип хвороби', required=True)
     description = fields.Text(string='Опис хвороби', required=True)
-    classification_name = fields.Many2one('classification',string='Класифікація', required=True)
+    classification_name = fields.Many2one('classification', string='Класифікація', required=True)
     method_diagnosis_name = fields.Char(string='Метод діагностики', required=True)
     treatment = fields.Text(string='Лікування')
-

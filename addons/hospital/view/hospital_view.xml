@@ -157,7 +157,7 @@
                         <group>
                             <field name="doctor_ids"/>
                             <field name="doctor_name"/>
-                            <field name="doctor_speciоalisation"/>
+                            <field name="doctor_specialisation"/>
                         </group>
                         <group>
                             <field name="intern"/>

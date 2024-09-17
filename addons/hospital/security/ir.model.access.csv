@@ -10,6 +10,8 @@ access_docktor_user,access.docktor.user,model_docktor,base.group_user,1,1,1,1
 access_diagnosis_user,access.diagnosis.user,model_diagnosis,base.group_user,1,1,1,1
 access_contact_person_user,access.contact.person.user,model_contact_person,base.group_user,1,1,1,1
 access_intern_user,access.intern.user,model_intern,base.group_user,1,1,1,1
+access_disease_type_user,access.disease.type.user,model_disease_type,base.group_user,1,1,1,1
+access_docktor_visit_user,access.docktor.visit.user,model_docktor_visit,base.group_user,1,1,1,1
 
 
 

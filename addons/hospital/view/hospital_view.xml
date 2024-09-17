@@ -108,6 +108,7 @@
                     <group>
                         <field name="name"/>
                         <field name="type_of_diseases"/>
+                        <field name="complete_disease_type"/>
                         <field name="description"/>
                         <field name="classification_name"/>
                         <field name="method_diagnosis_name"/>
@@ -125,6 +126,7 @@
             <tree string="Directory of Diseases">
                 <field name="name"/>
                 <field name="type_of_diseases"/>
+                <field name="complete_disease_type"/>
                 <field name="classification_name"/>
                 <field name="method_diagnosis_name"/>
             </tree>
@@ -190,4 +192,93 @@
         <field name="view_id" ref="view_diagnosis_tree"/>
         <field name="target">current</field>
     </record>
+
+    <record id="view_docktor_form" model="ir.ui.view">
+        <field name="name">docktor.form</field>
+        <field name="model">docktor</field>
+        <field name="arch" type="xml">
+            <form string="Лікар">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="mobile_phone"/>
+                            <field name="email"/>
+                            <field name="sex"/>
+                            <field name="specialisation"/>
+                        </group>
+                        <group>
+                            <field name="photo" widget="image" class="oe_avatar" options="{'size': [250, 250]}"/>
+                            <group></group>
+                        </group>
+                        <group>
+                            <field name="intern"/>
+                            <field name="intern_id" invisible="not intern"/>
+                            <field name="intern_name" invisible="not intern"/>
+                            <field name="intern_number" invisible="not intern"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_docktor_tree" model="ir.ui.view">
+        <field name="name">docktor.tree</field>
+        <field name="model">docktor</field>
+        <field name="arch" type="xml">
+            <tree string="Діагнози">
+                <field name="name"/>
+                <field name="specialisation"/>
+                <field name="intern_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="docktor_action" model="ir.actions.act_window">
+        <field name="name">Лікар</field>
+        <field name="res_model">docktor</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_docktor_tree"/>
+        <field name="target">current</field>
+    </record>
+
+    <record id="view_docktor_visit_form" model="ir.ui.view">
+        <field name="name">docktor.visit.form</field>
+        <field name="model">docktor.visit</field>
+        <field name="arch" type="xml">
+            <form string="Відвідування лікаря">
+                <sheet>
+                    <group>
+                        <field name="docktor_ids"/>
+                        <field name="patient_ids"/>
+                        <field name="diagnosis_ids"/>
+                        <field name="time"/>
+                        <field name="recommendation"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_docktor_visit_tree" model="ir.ui.view">
+        <field name="name">docktor.visit.tree</field>
+        <field name="model">docktor.visit</field>
+        <field name="arch" type="xml">
+            <tree string="Відвідування лікаря">
+                <field name="docktor_ids"/>
+                <field name="patient_ids"/>
+                <field name="time"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="docktor_visit_action" model="ir.actions.act_window">
+        <field name="name">Відвідування лікаря</field>
+        <field name="res_model">docktor.visit</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_docktor_visit_tree"/>
+        <field name="target">current</field>
+    </record>
+
 </odoo>

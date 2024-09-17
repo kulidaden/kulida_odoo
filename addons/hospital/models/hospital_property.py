@@ -12,7 +12,7 @@ class Person(models.Model):
     _description = 'Person'
 
     name = fields.Char(string='ПІБ', default=' ', required=True)
-    mobile_phone=fields.Integer(string='Номер телефону')
+    mobile_phone=fields.Char(string='Номер телефону')
     email=fields.Char(string='Емайл')
     photo=fields.Binary(string='Фото')
     sex=fields.Selection(string='Стать', selection=[
@@ -32,24 +32,32 @@ class Patient(models.Model):
         ('id карта', 'ID карта'),
         ('паспорт', 'Паспорт')
     ])
-    id_card=fields.Integer(string='Номер id картки')
-    id_code=fields.Integer(string='Ідентифікаційний код')
-    issuing_body=fields.Integer(string='Орган що видав')
-    numb_pass=fields.Integer(string='Номер паспорта')
-    record_numb=fields.Integer(string='Запис №')
-    contact_pers_id=fields.Many2one('contact.person', string='Контакстна особа')
-    personal_docktor=fields.Many2one('docktor', string='Персональний лікар')
-    diagnosis_ids = fields.One2many('diagnosis', 'patient_ids', string='Діагнози')
+    id_card=fields.Char(string='Номер id картки')
+    id_code=fields.Char(string='Ідентифікаційний код')
+    issuing_body=fields.Char(string='Орган що видав')
+    numb_pass=fields.Char(string='Номер паспорта')
+    record_numb=fields.Char(string='Запис №')
 
-    contact_name = fields.Char(related='contact_pers_id.name', string='ПІБ', store=True)
-    contact_mobile_phone = fields.Integer(related='contact_pers_id.mobile_phone', string='Телефон контактної особи', store=True)
+    diagnosis_ids = fields.One2many('diagnosis', 'patient_ids', string=' ')
+    diagnosis_name = fields.Char(related='diagnosis_ids.diseases_name.name', string='Діагноз', store=True)
+    diagnosis_doctor_name=fields.Char(related='diagnosis_ids.doctor_ids.name', string='Лікар', store=True)
+    injure_name_id = fields.Char(related='diagnosis_ids.injury_name', string='Травма', store=True)
+    intern_name_id = fields.Char(related='diagnosis_ids.intern_ids.name', store=True)
+    comment_of_docktor_id = fields.Text(related='diagnosis_ids.comment_of_docktor', string='Коментар лікаря')
+
+    contact_pers_id = fields.Many2one('contact.person', string='Контакстна особа')
+    contact_name = fields.Char(related='contact_pers_id.name', string='ПІБ контактної особи', store=True)
+    contact_mobile_phone = fields.Char(related='contact_pers_id.mobile_phone', string='Телефон контактної особи', store=True)
     contact_email = fields.Char(related='contact_pers_id.email', string='Електронна пошта контактної особи', store=True)
-    contact_relationship = fields.Selection(related='contact_pers_id.relationship', string='Стосунки з пацієнтом',
-                                       store=True)
-    doctor_id = fields.Many2one('docktor', string='Лікар')
+    contact_relationship = fields.Selection(related='contact_pers_id.relationship', string='Стосунки з пацієнтом',store=True)
+
+    doctor_id = fields.Many2one('docktor', string='Персональний лікар')
     doctor_name = fields.Char(related='doctor_id.name', string='ПІБ лікаря', store=True)
     doctor_specialisation = fields.Selection(related='doctor_id.specialisation', string='Спеціальність лікаря', store=True)
-    doctor_type = fields.Selection(related='doctor_id.doctor_type', string='Тип лікаря', store=True)
+    intern = fields.Boolean(string='Інтерн')
+
+    intern_id = fields.Many2one('intern', string='Інтерн')
+    intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
 
     @api.depends('birthday')
     def _compute_age(self):
@@ -149,10 +157,12 @@ class Docktor(models.Model):
         ('лікар-лаборант-цитолог', 'Лікар-лаборант-цитолог')
 
     ])
-    doctor_type=fields.Selection(string='Тип лікаря',selection=[
-        ('лікар-ментор', 'Лікар-ментор'),
-        ('інтерн', 'Інтерн')
-    ])
+
+
+class Intern(models.Model):
+    _inherit = 'person'
+    _name = 'intern'
+    _description = 'Intern'
 
 
 class Diagnosis(models.Model):
@@ -160,11 +170,19 @@ class Diagnosis(models.Model):
     _description = 'Diagnosis'
 
     doctor_ids = fields.Many2one('docktor', string='Лікар')
+    intern_ids = fields.Many2one('intern',string='Інтерн')
     patient_ids = fields.Many2one('patient', string='Пацієнт')
     diseases_name = fields.Many2one('directory.of.diseases', string='Назва хвороби' )
+    intern = fields.Boolean(string='Інтерн')
     injury_name = fields.Char(string='Назва травми')
     appointment_of_treatment = fields.Text(string='Призначення лікування')
+    comment_of_docktor=fields.Text(string='Коментар лікаря')
     data_of_diseases = fields.Date(string='Дата встановлення діагнозу')
+
+    doctor_name = fields.Char(related='doctor_ids.name', string='ПІБ лікаря', store=True)
+    doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True)
+
+    intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True)
     @api.onchange('diseases')
     def _choose_diseases(self):
         if self.diseases:
@@ -189,6 +207,6 @@ class DirectoryOfDiseases(models.Model):
     type_of_diseases = fields.Char(string='Тип хвороби', required=True)
     description = fields.Text(string='Опис хвороби', required=True)
     classification_name = fields.Many2one('classification',string='Класифікація', required=True)
-    method_diagnosis_name = fields.Many2one('type.of.diagnosis',string='Метод діагностики', required=True)
+    method_diagnosis_name = fields.Char(string='Метод діагностики', required=True)
     treatment = fields.Text(string='Лікування')
 

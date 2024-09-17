@@ -9,6 +9,7 @@ access_person_user,access.person.user,model_person,base.group_user,1,1,1,1
 access_docktor_user,access.docktor.user,model_docktor,base.group_user,1,1,1,1
 access_diagnosis_user,access.diagnosis.user,model_diagnosis,base.group_user,1,1,1,1
 access_contact_person_user,access.contact.person.user,model_contact_person,base.group_user,1,1,1,1
+access_intern_user,access.intern.user,model_intern,base.group_user,1,1,1,1
 
 
 

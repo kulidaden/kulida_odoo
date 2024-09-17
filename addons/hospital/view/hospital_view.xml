@@ -31,10 +31,12 @@
                                 <field name="contact_relationship" readonly="1"/>
                             </group>
                             <group string="Персональний лікар">
-                                <field name="personal_docktor"/>
+                                <field name="doctor_id"/>
                                 <field name="doctor_name" readonly="1"/>
                                 <field name="doctor_specialisation" readonly="1"/>
-                                <field name="doctor_type" readonly="1"/>
+                                <field name="intern"/>
+                                <field name="intern_id" invisible="not intern"/>
+                                <field name="intern_name" readonly="1" invisible="not intern"/>
                             </group>
                         </group>
                     </group>
@@ -42,8 +44,11 @@
                         <field name="diagnosis_ids">
                             <tree>
                                 <field name="diseases_name"/>
-                                <field name="injury_name"/>
+                                <field name="injury_name" />
+                                <field name="doctor_ids"/>
+                                <field name="intern_ids"/>
                                 <field name="appointment_of_treatment"/>
+                                <field name="comment_of_docktor"/>
                                 <field name="data_of_diseases"/>
                             </tree>
                         </field>
@@ -59,40 +64,40 @@
         <field name="arch" type="xml">
             <tree string="Пацієнт">
                 <field name="name"/>
-                <field name="personal_docktor"/>
-                <field name="diagnosis_ids"/>
+                <field name="doctor_id"/>
+                <field name="diagnosis_name"/>
+                <field name="injure_name_id"/>
             </tree>
         </field>
     </record>
 
     <record id="patient_action" model="ir.actions.act_window">
-        <field name="name">Patient</field>
+        <field name="name">Пацієнт</field>
         <field name="res_model">patient</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_patient_tree"/>
     </record>
-
     <record id="view_contact_person_form" model="ir.ui.view">
-    <field name="name">contact.person.form</field>
-    <field name="model">contact.person</field>
-    <field name="arch" type="xml">
-        <form string="Contact Person">
-            <sheet>
-                <group>
-                    <field name="name"/>
-                    <field name="mobile_phone"/>
-                    <field name="email"/>
-                </group>
-                <group>
-                    <field name="relationship"/>
-                </group>
-                <group>
-                    <field name="patient_ids" widget="many2many_tags"/>
-                </group>
-            </sheet>
-        </form>
-    </field>
-</record>
+        <field name="name">contact.person.form</field>
+        <field name="model">contact.person</field>
+        <field name="arch" type="xml">
+            <form string="Contact Person">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="mobile_phone"/>
+                        <field name="email"/>
+                    </group>
+                    <group>
+                        <field name="relationship"/>
+                    </group>
+                    <group>
+                        <field name="patient_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 
     <record id="view_directory_of_diseases_form" model="ir.ui.view">
         <field name="name">directory.of.diseases.form</field>
@@ -129,10 +134,62 @@
     </record>
 
     <record id="directory_of_diseases_action" model="ir.actions.act_window">
-        <field name="name">Directory of Diseases</field>
+        <field name="name">Список Хвороб</field>
         <field name="res_model">directory.of.diseases</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_directory_of_diseases_tree"/>
+        <field name="target">current</field>
+    </record>
+
+        <record id="view_diagnosis_form" model="ir.ui.view">
+        <field name="name">diagnosis.form</field>
+        <field name="model">diagnosis</field>
+        <field name="arch" type="xml">
+            <form string="Діагнози">
+                <sheet>
+                    <group>
+                        <field name="patient_ids"/>
+                        <field name="diseases_name"/>
+                        <field name="injury_name"/>
+                        <field name="appointment_of_treatment"/>
+                        <field name="comment_of_docktor" invisible="not intern"/>
+                        <field name="data_of_diseases"/>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="doctor_ids"/>
+                            <field name="doctor_name"/>
+                            <field name="doctor_specialisation"/>
+                        </group>
+                        <group>
+                            <field name="intern"/>
+                            <field name="intern_ids" invisible="not intern"/>
+                            <field name="intern_name" invisible="not intern"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_diagnosis_tree" model="ir.ui.view">
+        <field name="name">diagnosis.tree</field>
+        <field name="model">diagnosis</field>
+        <field name="arch" type="xml">
+            <tree string="Діагнози">
+                <field name="patient_ids"/>
+                <field name="diseases_name"/>
+                <field name="injury_name"/>
+                <field name="doctor_ids"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="diagnosis_action" model="ir.actions.act_window">
+        <field name="name">Діагнози</field>
+        <field name="res_model">diagnosis</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_diagnosis_tree"/>
         <field name="target">current</field>
     </record>
 </odoo>

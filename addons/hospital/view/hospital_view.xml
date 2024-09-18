@@ -179,9 +179,9 @@
         <field name="arch" type="xml">
             <tree string="Діагнози">
                 <field name="patient_ids"/>
+                <field name="doctor_ids"/>
                 <field name="diseases_name"/>
                 <field name="injury_name"/>
-                <field name="doctor_ids"/>
             </tree>
         </field>
     </record>
@@ -218,6 +218,16 @@
                             <field name="intern_name" invisible="not intern"/>
                             <field name="intern_number" invisible="not intern"/>
                         </group>
+                    </group>
+                    <group string="Історія лікаря">
+                        <field name="docktor_history_ids">
+                            <tree decoration-success="status_color == 'green'" decoration-danger="status_color == 'red'">
+                                <field name="patient_ids"/>
+                                <field name="docktor_ids"/>
+                                <field name="meeting"/>
+                                <field name="status_color"/>
+                            </tree>
+                        </field>
                     </group>
                 </sheet>
             </form>

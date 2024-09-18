@@ -59,6 +59,40 @@ class Patient(models.Model):
     intern_id = fields.Many2one('intern', string='Інтерн')
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
 
+    @api.model
+    def create(self, vals):
+
+        patient = super(Patient, self).create(vals)
+
+        if patient.doctor_id:
+            print("hello!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            self.env['docktor.history'].create({
+                'patient_ids': patient.id,
+                'docktor_ids': patient.doctor_id.id,
+                'meeting': datetime.now(),
+            })
+
+        return patient
+
+    @api.model
+    def write(self, vals):
+        new_doctor_id = vals.get('doctor_id')
+        if new_doctor_id:
+            for patient in self:
+                existing_record = self.env['docktor.history'].search([
+                    ('patient_ids', '=', patient.id),
+                    ('docktor_ids', '=', new_doctor_id)
+                ])
+
+                if not existing_record:
+                    self.env['docktor.history'].create({
+                        'docktor_ids': new_doctor_id,
+                        'patient_ids': patient.id,
+                        'meeting': datetime.now(),
+                    })
+
+        return super(Patient, self).write(vals)
+
     @api.depends('birthday')
     def _compute_age(self):
         for record in self:
@@ -161,6 +195,10 @@ class Docktor(models.Model):
     intern_id = fields.Many2one('intern', string='Інтерн')
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
     intern_number = fields.Char(related='intern_id.mobile_phone', string='Номер телефону')
+    patient = fields.Many2one('Patient', string='Пацієнт')
+    docktor_history_ids=fields.One2many('docktor.history','docktor_ids',string=' ')
+
+
 
 
 class Intern(models.Model):
@@ -231,3 +269,35 @@ class DocktorVisit(models.Model):
     name = fields.Char(related='docktor_ids.name')
     time=fields.Datetime(string='Дата/Час')
     recommendation=fields.Text(string='Рекомендації')
+
+
+class DocktorHistory(models.Model):
+    _name = 'docktor.history'
+    _description = 'Docktor\'s history'
+
+    docktor_ids=fields.Many2one('docktor', string='Лікар')
+    patient_ids=fields.Many2one('patient',string='Пацієнт')
+    meeting=fields.Date(string='Дата призначення')
+    status_color = fields.Selection([
+        ('green', 'Активний пацієнт'),
+        ('red', 'Неактивний пацієнт')
+    ], string="Статус", compute='_compute_status_color')
+
+    @api.depends('docktor_ids', 'patient_ids.doctor_id')
+    def _compute_status_color(self):
+        for record in self:
+            if record.patient_ids.doctor_id == record.docktor_ids:
+                record.status_color = 'green'
+            else:
+                record.status_color = 'red'
+
+
+
+
+
+
+
+
+
+
+

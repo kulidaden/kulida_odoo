@@ -38,7 +38,7 @@ class Patient(models.Model):
     numb_pass=fields.Char(string='Номер паспорта')
     record_numb=fields.Char(string='Запис №')
 
-    diagnosis_ids = fields.One2many('diagnosis', 'patient_ids', string=' ')
+    diagnosis_ids = fields.One2many('diagnosis', 'patient_ids')
     diagnosis_name = fields.Char(related='diagnosis_ids.diseases_name.name', string='Діагноз', store=True)
     diagnosis_doctor_name=fields.Char(related='diagnosis_ids.doctor_ids.name', string='Лікар', store=True)
     injure_name_id = fields.Char(related='diagnosis_ids.injury_name', string='Травма', store=True)
@@ -59,13 +59,14 @@ class Patient(models.Model):
     intern_id = fields.Many2one('intern', string='Інтерн')
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
 
+    exploration_ids=fields.One2many('exploration','patient_ids')
+
     @api.model
     def create(self, vals):
 
         patient = super(Patient, self).create(vals)
 
         if patient.doctor_id:
-            print("hello!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             self.env['docktor.history'].create({
                 'patient_ids': patient.id,
                 'docktor_ids': patient.doctor_id.id,
@@ -118,6 +119,7 @@ class ContactPerson(models.Model):
         ('other', 'Інший')
     ], string='Відношення до пацієнта', required=True)
     patient_ids = fields.One2many('patient', 'contact_pers_id', string='Пацієнти')
+
 
 class Docktor(models.Model):
     _inherit = 'person'
@@ -199,8 +201,6 @@ class Docktor(models.Model):
     docktor_history_ids=fields.One2many('docktor.history','docktor_ids',string=' ')
 
 
-
-
 class Intern(models.Model):
     _inherit = 'person'
     _name = 'intern'
@@ -213,19 +213,19 @@ class Diagnosis(models.Model):
 
     doctor_ids = fields.Many2one('docktor', string='Лікар')
     intern_ids = fields.Many2one('intern',string='Інтерн')
-    patient_ids = fields.Many2one('patient', string='Пацієнт')
+    patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
     diseases_name = fields.Many2one('directory.of.diseases', string='Назва хвороби')
     name=fields.Char(related='diseases_name.name')
     intern = fields.Boolean(string='Інтерн')
     injury_name = fields.Char(string='Назва травми')
-    appointment_of_treatment = fields.Text(string='Призначення лікування')
-    comment_of_docktor=fields.Text(string='Коментар лікаря')
+    appointment_of_treatment = fields.Text(string='Призначення лікування', required=True)
+    comment_of_docktor=fields.Text(string='Коментар лікаря', required=True)
     data_of_diseases = fields.Date(string='Дата встановлення діагнозу')
 
-    doctor_name = fields.Char(related='doctor_ids.name', string='ПІБ лікаря', store=True)
-    doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True)
+    doctor_name = fields.Char(related='doctor_ids.name', string='ПІБ лікаря', store=True, required=True)
+    doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True, required=True)
 
-    intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True)
+    intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True, required=True)
 
 
 class DiseaseType(models.Model):
@@ -265,7 +265,7 @@ class DocktorVisit(models.Model):
 
     patient_ids=fields.Many2one('patient',string='Пацієнт')
     docktor_ids=fields.Many2one('docktor',string='Лікар')
-    diagnosis_ids=fields.Many2one('diagnosis',string='Діагноз')
+    diagnosis_ids=fields.Char(related='patient_ids.diagnosis_name',string='Діагноз')
     name = fields.Char(related='docktor_ids.name')
     time=fields.Datetime(string='Дата/Час')
     recommendation=fields.Text(string='Рекомендації')
@@ -290,13 +290,6 @@ class DocktorHistory(models.Model):
                 record.status_color = 'green'
             else:
                 record.status_color = 'red'
-
-
-
-
-
-
-
 
 
 

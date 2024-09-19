@@ -292,5 +292,45 @@ class DocktorHistory(models.Model):
                 record.status_color = 'red'
 
 
+class Exploration(models.Model):
+    _name = 'exploration'
+    _description = 'Exploration'
+
+    name=fields.Char(string='Дослідження')
+    number_exploration=fields.Char(string='Номер дослідження', unique=True)
+    patient_ids=fields.Many2one('patient',string='Пацієнт', required=True)
+    patient_age=fields.Integer(related='patient_ids.age',string='Вік пацієнта')
+    diagnosis_name=fields.Char(related='patient_ids.diagnosis_ids.diseases_name.name', string='Діагноз')
+    doctor_name=fields.Char(related='patient_ids.doctor_name', string='Лікар')
+    doctor_specialisation=fields.Selection(related='patient_ids.doctor_specialisation', string='Спеціальність лікаря')
+    type_exploration=fields.Many2one('type.exploration',string='Тип дослідження')
+    complete_exploration_type = fields.Char(related='type_exploration.complete_name', string='Повний тип дослідження',store=True)
+    example=fields.Many2one('example.exploration', string='Зразок', store=True)
+    conclusion=fields.Text(string='Висновок')
+
+
+class TypeExploration(models.Model):
+    _name = 'type.exploration'
+    _description = 'Type exploration'
+
+    name=fields.Char(string='Тип дослідження', required=True)
+    parent_id = fields.Many2one('type.exploration', string='Основний тип')
+    child_ids = fields.One2many('type.exploration', 'parent_id', string='Підтипи')
+    complete_name = fields.Char(compute='_compute_complete_name', string='Повна назва', store=True)
+
+
+
+    @api.depends('name', 'parent_id')
+    def _compute_complete_name(self):
+        for record in self:
+            if record.parent_id:
+                record.complete_name = f"{record.parent_id.complete_name} / {record.name}"
+            else:
+                record.complete_name = record.name
+
+
+
+
+
 
 

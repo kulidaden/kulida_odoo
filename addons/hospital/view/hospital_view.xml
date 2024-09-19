@@ -41,19 +41,24 @@
                             </group>
                         </group>
                     </group>
-                    <group string="Діагнози пацієнта">
-                        <field name="diagnosis_ids">
-                            <tree>
-                                <field name="diseases_name"/>
-                                <field name="injury_name" />
-                                <field name="doctor_ids"/>
-                                <field name="intern_ids"/>
-                                <field name="appointment_of_treatment"/>
-                                <field name="comment_of_docktor"/>
-                                <field name="data_of_diseases"/>
-                            </tree>
-                        </field>
-                    </group>
+                    <notebook>
+                        <page string="Діагнози пацієнта">
+                            <field name="diagnosis_ids">
+                                <tree>
+                                    <field name="diseases_name"/>
+                                    <field name="injury_name" />
+                                    <field name="doctor_ids"/>
+                                    <field name="intern_ids"/>
+                                    <field name="appointment_of_treatment"/>
+                                    <field name="comment_of_docktor"/>
+                                    <field name="data_of_diseases"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page>
+
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
@@ -291,5 +296,51 @@
         <field name="view_id" ref="view_docktor_visit_tree"/>
         <field name="target">current</field>
     </record>
+
+    <record id="view_exploration_form" model="ir.ui.view">
+        <field name="name">exploration.form</field>
+        <field name="model">exploration</field>
+        <field name="arch" type="xml">
+            <form string="Досідження">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="number_exploration"/>
+                        <field name="patient_ids"/>
+                        <field name="patient_age"/>
+                        <field name="diagnosis_name"/>
+                        <field name="doctor_name"/>
+                        <field name="doctor_specialisation"/>
+                        <field name="type_exploration"/>
+                        <field name="complete_exploration_type"/>
+                        <field name="example"/>
+                        <field name="conclusion"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_exploration_tree" model="ir.ui.view">
+        <field name="name">exploration.tree</field>
+        <field name="model">exploration</field>
+        <field name="arch" type="xml">
+            <tree string="Дослідження">
+                <field name="name"/>
+                <field name="number_exploration"/>
+                <field name="patient_ids"/>
+                <field name="doctor_name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="exploration_action" model="ir.actions.act_window">
+        <field name="name">Дослідження</field>
+        <field name="res_model">exploration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_exploration_tree"/>
+        <field name="target">current</field>
+    </record>
+
 
 </odoo>

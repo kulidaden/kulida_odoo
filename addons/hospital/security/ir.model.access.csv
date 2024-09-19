@@ -13,5 +13,10 @@ access_intern_user,access.intern.user,model_intern,base.group_user,1,1,1,1
 access_disease_type_user,access.disease.type.user,model_disease_type,base.group_user,1,1,1,1
 access_docktor_visit_user,access.docktor.visit.user,model_docktor_visit,base.group_user,1,1,1,1
 access_docktor_history_user,access.docktor.history.user,model_docktor_history,base.group_user,1,1,1,1
+access_exploration_user,access.exploration.user,model_exploration,base.group_user,1,1,1,1
+access_type_exploration_user,access.type.exploration.user,model_type_exploration,base.group_user,1,1,1,1
+access_example_exploration_user,access.example.exploration.user,model_example_exploration,base.group_user,1,1,1,1
+
+
 
 

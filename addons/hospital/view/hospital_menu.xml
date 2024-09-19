@@ -19,4 +19,7 @@
     <menuitem id="menu_directory_of_diseases" name="Довідник хвороб"
               parent="menu_hospital_root"
               action="directory_of_diseases_action"/>
+    <menuitem id="menu_exploration" name="Дослідження"
+              parent="menu_hospital_root"
+              action="exploration_action"/>
 </odoo>

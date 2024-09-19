@@ -272,6 +272,17 @@
                         <field name="time"/>
                         <field name="recommendation"/>
                     </group>
+                    <notebook>
+                        <page string="Дослідження">
+                            <field name="exploration_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="number_exploration"/>
+                                    <field name="conclusion"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

@@ -11,7 +11,7 @@ class Person(models.Model):
     _name = 'person'
     _description = 'Person'
 
-    name = fields.Char(string='ПІБ', default=' ', required=True)
+    name = fields.Char(string='ПІБ', default='', required=True)
     mobile_phone=fields.Char(string='Номер телефону')
     email=fields.Char(string='Емайл')
     photo=fields.Binary(string='Фото')
@@ -104,6 +104,27 @@ class Patient(models.Model):
                 record.age = age
             else:
                 record.age = 0
+
+
+class DocktorHistory(models.Model):
+    _name = 'docktor.history'
+    _description = 'Docktor\'s history'
+
+    docktor_ids=fields.Many2one('docktor', string='Лікар')
+    patient_ids=fields.Many2one('patient',string='Пацієнт')
+    meeting=fields.Date(string='Дата призначення')
+    status_color = fields.Selection([
+        ('green', 'Активний пацієнт'),
+        ('red', 'Неактивний пацієнт')
+    ], string="Статус", compute='_compute_status_color')
+
+    @api.depends('docktor_ids', 'patient_ids.doctor_id')
+    def _compute_status_color(self):
+        for record in self:
+            if record.patient_ids.doctor_id == record.docktor_ids:
+                record.status_color = 'green'
+            else:
+                record.status_color = 'red'
 
 
 class ContactPerson(models.Model):
@@ -219,13 +240,13 @@ class Diagnosis(models.Model):
     intern = fields.Boolean(string='Інтерн')
     injury_name = fields.Char(string='Назва травми')
     appointment_of_treatment = fields.Text(string='Призначення лікування', required=True)
-    comment_of_docktor=fields.Text(string='Коментар лікаря', required=True)
+    comment_of_docktor=fields.Text(string='Коментар лікаря')
     data_of_diseases = fields.Date(string='Дата встановлення діагнозу')
 
-    doctor_name = fields.Char(related='doctor_ids.name', string='ПІБ лікаря', store=True, required=True)
-    doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True, required=True)
+    doctor_name = fields.Char(related='doctor_ids.name', string='ПІБ лікаря', store=True)
+    doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True)
 
-    intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True, required=True)
+    intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True)
 
 
 class DiseaseType(models.Model):
@@ -263,50 +284,50 @@ class DocktorVisit(models.Model):
     _name = 'docktor.visit'
     _description = "Docktor's visit"
 
-    patient_ids=fields.Many2one('patient',string='Пацієнт')
-    docktor_ids=fields.Many2one('docktor',string='Лікар')
-    diagnosis_ids=fields.Char(related='patient_ids.diagnosis_name',string='Діагноз')
+    patient_ids = fields.Many2one('patient', string='Пацієнт')
+    docktor_ids = fields.Many2one('docktor', string='Лікар')
+    exploration_ids = fields.One2many('exploration', 'doctor_ids', string='Дослідження')
+    diagnosis_ids = fields.Char(related='patient_ids.diagnosis_name', string='Діагноз')
     name = fields.Char(related='docktor_ids.name')
-    time=fields.Datetime(string='Дата/Час')
-    recommendation=fields.Text(string='Рекомендації')
-
-
-class DocktorHistory(models.Model):
-    _name = 'docktor.history'
-    _description = 'Docktor\'s history'
-
-    docktor_ids=fields.Many2one('docktor', string='Лікар')
-    patient_ids=fields.Many2one('patient',string='Пацієнт')
-    meeting=fields.Date(string='Дата призначення')
-    status_color = fields.Selection([
-        ('green', 'Активний пацієнт'),
-        ('red', 'Неактивний пацієнт')
-    ], string="Статус", compute='_compute_status_color')
-
-    @api.depends('docktor_ids', 'patient_ids.doctor_id')
-    def _compute_status_color(self):
-        for record in self:
-            if record.patient_ids.doctor_id == record.docktor_ids:
-                record.status_color = 'green'
-            else:
-                record.status_color = 'red'
+    time = fields.Datetime(string='Дата/Час')
+    recommendation = fields.Text(string='Рекомендації')
 
 
 class Exploration(models.Model):
     _name = 'exploration'
     _description = 'Exploration'
+    _sql_constraints = [
+        ('unique_number_exploration', 'unique(number_exploration)', 'The number must be unique!')
+    ]
 
-    name=fields.Char(string='Дослідження')
-    number_exploration=fields.Char(string='Номер дослідження', unique=True)
-    patient_ids=fields.Many2one('patient',string='Пацієнт', required=True)
-    patient_age=fields.Integer(related='patient_ids.age',string='Вік пацієнта')
-    diagnosis_name=fields.Char(related='patient_ids.diagnosis_ids.diseases_name.name', string='Діагноз')
-    doctor_name=fields.Char(related='patient_ids.doctor_name', string='Лікар')
-    doctor_specialisation=fields.Selection(related='patient_ids.doctor_specialisation', string='Спеціальність лікаря')
-    type_exploration=fields.Many2one('type.exploration',string='Тип дослідження')
-    complete_exploration_type = fields.Char(related='type_exploration.complete_name', string='Повний тип дослідження',store=True)
-    example=fields.Many2one('example.exploration', string='Зразок', store=True)
-    conclusion=fields.Text(string='Висновок')
+    name = fields.Char(string='Дослідження')
+    number_exploration = fields.Char(string='Номер дослідження')
+    patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
+    doctor_ids = fields.Many2one('docktor.visit', string='Відвідування лікаря')
+    patient_age = fields.Integer(related='patient_ids.age', string='Вік пацієнта')
+    diagnosis_name = fields.Char(related='patient_ids.diagnosis_ids.diseases_name.name', string='Діагноз')
+    doctor_name = fields.Char(related='patient_ids.doctor_name', string='Лікар')
+    doctor_specialisation = fields.Selection(related='patient_ids.doctor_specialisation', string='Спеціальність лікаря')
+    type_exploration = fields.Many2one('type.exploration', string='Тип дослідження')
+    complete_exploration_type = fields.Char(related='type_exploration.complete_name', string='Повний тип дослідження', store=True)
+    example = fields.Many2one('example.exploration', string='Зразок', store=True)
+    conclusion = fields.Text(string='Висновок')
+
+    @api.model
+    def create(self, vals):
+        exploration_record = super(Exploration, self).create(vals)
+
+        # Знаходимо лікаря за doctor_name
+        if exploration_record.patient_ids:
+            doctor_name = exploration_record.patient_ids.doctor_name
+            doctor_visit = self.env['docktor.visit'].search([
+                ('docktor_ids.name', '=', doctor_name),
+                ('patient_ids', '=', exploration_record.patient_ids.id)
+            ], limit=1)
+            if doctor_visit:
+                doctor_visit.exploration_ids = [(4, exploration_record.id)]
+
+        return exploration_record
 
 
 class TypeExploration(models.Model):
@@ -317,8 +338,6 @@ class TypeExploration(models.Model):
     parent_id = fields.Many2one('type.exploration', string='Основний тип')
     child_ids = fields.One2many('type.exploration', 'parent_id', string='Підтипи')
     complete_name = fields.Char(compute='_compute_complete_name', string='Повна назва', store=True)
-
-
 
     @api.depends('name', 'parent_id')
     def _compute_complete_name(self):

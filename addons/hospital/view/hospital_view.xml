@@ -147,7 +147,7 @@
         <field name="target">current</field>
     </record>
 
-        <record id="view_diagnosis_form" model="ir.ui.view">
+    <record id="view_diagnosis_form" model="ir.ui.view">
         <field name="name">diagnosis.form</field>
         <field name="model">diagnosis</field>
         <field name="arch" type="xml">
@@ -173,6 +173,17 @@
                             <field name="intern_name" invisible="not intern"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="Дослідження">
+                            <field name="exploration_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="number_exploration"/>
+                                    <field name="conclusion"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

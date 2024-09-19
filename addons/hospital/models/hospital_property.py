@@ -236,6 +236,7 @@ class Diagnosis(models.Model):
     intern_ids = fields.Many2one('intern',string='Інтерн')
     patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
     diseases_name = fields.Many2one('directory.of.diseases', string='Назва хвороби')
+    exploration_ids = fields.One2many('exploration', 'diagnosis_ids', string='Дослідження')
     name=fields.Char(related='diseases_name.name')
     intern = fields.Boolean(string='Інтерн')
     injury_name = fields.Char(string='Назва травми')
@@ -304,6 +305,7 @@ class Exploration(models.Model):
     number_exploration = fields.Char(string='Номер дослідження')
     patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
     doctor_ids = fields.Many2one('docktor.visit', string='Відвідування лікаря')
+    diagnosis_ids=fields.Many2one('diagnosis',string='Діагнози')
     patient_age = fields.Integer(related='patient_ids.age', string='Вік пацієнта')
     diagnosis_name = fields.Char(related='patient_ids.diagnosis_ids.diseases_name.name', string='Діагноз')
     doctor_name = fields.Char(related='patient_ids.doctor_name', string='Лікар')
@@ -317,15 +319,22 @@ class Exploration(models.Model):
     def create(self, vals):
         exploration_record = super(Exploration, self).create(vals)
 
-        # Знаходимо лікаря за doctor_name
         if exploration_record.patient_ids:
             doctor_name = exploration_record.patient_ids.doctor_name
+
             doctor_visit = self.env['docktor.visit'].search([
                 ('docktor_ids.name', '=', doctor_name),
                 ('patient_ids', '=', exploration_record.patient_ids.id)
             ], limit=1)
             if doctor_visit:
                 doctor_visit.exploration_ids = [(4, exploration_record.id)]
+
+            diagnosis = self.env['diagnosis'].search([
+                ('doctor_ids.name', '=', doctor_name),
+                ('patient_ids', '=', exploration_record.patient_ids.id)
+            ], limit=1)
+            if diagnosis:
+                diagnosis.exploration_ids = [(4, exploration_record.id)]
 
         return exploration_record
 

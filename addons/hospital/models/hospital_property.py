@@ -234,8 +234,9 @@ class DocktorVisit(models.Model):
     appointment_was=fields.Boolean(string='Відвідування відбулося')
 
     def write(self, vals):
-        if 'appointment_was' in vals and vals['appointment_was']:
-            raise ValidationError("Не можна змінювати записи після відвідування.")
+        for record in self:
+            if record.appointment_was and any(key not in ['appointment_was'] for key in vals.keys()):
+                raise ValidationError("Не можна змінювати інші поля після підтвердження відвідування.")
 
         return super(DocktorVisit, self).write(vals)
 

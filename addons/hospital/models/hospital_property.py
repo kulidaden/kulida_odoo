@@ -53,7 +53,7 @@ class Patient(models.Model):
 
     doctor_id = fields.Many2one('docktor', string='Персональний лікар')
     doctor_name = fields.Char(related='doctor_id.name', string='ПІБ лікаря', store=True)
-    doctor_specialisation = fields.Selection(related='doctor_id.specialisation', string='Спеціальність лікаря', store=True)
+    doctor_specialisation = fields.Many2one(related='doctor_id.specialisation', string='Спеціальність лікаря', store=True)
     intern = fields.Boolean(string='Інтерн')
 
     intern_id = fields.Many2one('intern', string='Інтерн')
@@ -147,73 +147,7 @@ class Docktor(models.Model):
     _name = 'docktor'
     _description = 'Docktor'
 
-    specialisation=fields.Selection(string='Спеціальність', selection=[
-        ('травматолог', 'Травматолог'),
-        ('стоматолог', 'Стоматолог'),
-        ('кардіолог', 'Кардіолог'),
-        ('невролог', 'Невролог'),
-        ('ендокринолог', 'Ендокринолог'),
-        ('гінеколог', 'Гінеколог'),
-        ('уролог', 'Уролог'),
-        ('дерматолог', 'Дерматолог'),
-        ('онколог', 'Онколог'),
-        ('пульмонолог', 'Пульмонолог'),
-        ('офтальмолог', 'Офтальмолог'),
-        ('оториноларинголог', 'Оториноларинголог'),
-        ('ревматолог', 'Ревматолог'),
-        ('алерголог', 'Алерголог'),
-        ('інфекціоніст', 'Інфекціоніст'),
-        ('анестезіолог', 'Анестезіолог'),
-        ('хірург', 'Хірург'),
-        ('проктолог', 'Проктолог'),
-        ('педіатр', 'Педіатр'),
-        ('гепатолог', 'Гепатолог'),
-        ('гастроентеролог', 'Гастроентеролог'),
-        ('неонатолог', 'Неонатолог'),
-        ('геронтолог', 'Геронтолог'),
-        ('нефролог', 'Нефролог'),
-        ('мамолог', 'Мамолог'),
-        ('флеболог', 'Флеболог'),
-        ('фізіотерапевт', 'Фізіотерапевт'),
-        ('сексопатолог', 'Сексопатолог'),
-        ('психіатр', 'Психіатр'),
-        ('психотерапевт', 'Психотерапевт'),
-        ('дитячий хірург', 'Дитячий хірург'),
-        ('нейрохірург', 'Нейрохірург'),
-        ('імунолог', 'Імунолог'),
-        ('логопед', 'Логопед'),
-        ('ангіолог', 'Ангіолог'),
-        ('епідеміолог', 'Епідеміолог'),
-        ('фізіолог', 'Фізіолог'),
-        ('судинний хірург', 'Судинний хірург'),
-        ('стоматолог-ортодонт', 'Стоматолог-ортодонт'),
-        ('стоматолог-хірург', 'Стоматолог-хірург'),
-        ('паразитолог', 'Паразитолог'),
-        ('санолог', 'Санолог'),
-        ('віролог', 'Віролог'),
-        ('гематолог', 'Гематолог'),
-        ('токсиколог', 'Токсиколог'),
-        ('педіатр-неонатолог', 'Педіатр-неонатолог'),
-        ('патологоанатом', 'Патологоанатом'),
-        ('пластичний хірург', 'Пластичний хірург'),
-        ('ортопед', 'Ортопед'),
-        ('військовий хірург', 'Військовий хірург'),
-        ('стоматолог-ортопед', 'Стоматолог-ортопед'),
-        ('акушер', 'Акушер'),
-        ('вертебролог', 'Вертебролог'),
-        ('фізіатр', 'Фізіатр'),
-        ('косметолог', 'Косметолог'),
-        ('сомнолог', 'Сомнолог'),
-        ('дієтолог', 'Дієтолог'),
-        ('педіатр-ендокринолог', 'Педіатр-ендокринолог'),
-        ('педіатр-кардіолог', 'Педіатр-кардіолог'),
-        ('клінічний фармаколог', 'Клінічний фармаколог'),
-        ('андролог', 'Андролог'),
-        ('лікар-лаборант', 'Лікар-лаборант'),
-        ('лікар-лаборант-бактеріолог', 'Лікар-лаборант-бактеріолог'),
-        ('лікар-лаборант-цитолог', 'Лікар-лаборант-цитолог')
-
-    ])
+    specialisation=fields.Many2one('specialisation.ids',string='Спеціальність')
     intern = fields.Boolean(string='Інтерн')
     intern_id = fields.Many2one('intern', string='Інтерн')
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
@@ -245,7 +179,7 @@ class Diagnosis(models.Model):
     data_of_diseases = fields.Date(string='Дата встановлення діагнозу')
 
     doctor_name = fields.Char(related='doctor_ids.name', string='ПІБ лікаря', store=True)
-    doctor_specialisation = fields.Selection(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True)
+    doctor_specialisation = fields.Many2one(related='doctor_ids.specialisation', string='Спеціальність лікаря', store=True)
 
     intern_name = fields.Char(related='intern_ids.name', string='ПІБ інтерна', store=True)
 
@@ -277,7 +211,7 @@ class DirectoryOfDiseases(models.Model):
     complete_disease_type = fields.Char(related='type_of_diseases.complete_name', string='Повний тип хвороби',store=True)
     description = fields.Text(string='Опис хвороби', required=True)
     classification_name = fields.Many2one('classification', string='Класифікація', required=True)
-    method_diagnosis_name = fields.Char(string='Метод діагностики', required=True)
+    method_diagnosis_name = fields.Many2one('method.diagnosis',string='Метод діагностики', required=True)
     treatment = fields.Text(string='Лікування')
 
 
@@ -298,7 +232,7 @@ class Exploration(models.Model):
     _name = 'exploration'
     _description = 'Exploration'
     _sql_constraints = [
-        ('unique_number_exploration', 'unique(number_exploration)', 'The number must be unique!')
+        ('unique_number_exploration', 'unique(number_exploration)', 'Номер має бути унікальним!')
     ]
 
     name = fields.Char(string='Дослідження')
@@ -306,11 +240,11 @@ class Exploration(models.Model):
     patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
     doctor_ids = fields.Many2one('docktor.visit', string='Відвідування лікаря')
     diagnosis_ids=fields.Many2one('diagnosis',string='Діагнози')
+    type_exploration = fields.Many2one('type.exploration', string='Тип дослідження')
+    doctor_specialisation = fields.Many2one(related='patient_ids.doctor_specialisation', string='Спеціальність лікаря')
     patient_age = fields.Integer(related='patient_ids.age', string='Вік пацієнта')
     diagnosis_name = fields.Char(related='patient_ids.diagnosis_ids.diseases_name.name', string='Діагноз')
     doctor_name = fields.Char(related='patient_ids.doctor_name', string='Лікар')
-    doctor_specialisation = fields.Selection(related='patient_ids.doctor_specialisation', string='Спеціальність лікаря')
-    type_exploration = fields.Many2one('type.exploration', string='Тип дослідження')
     complete_exploration_type = fields.Char(related='type_exploration.complete_name', string='Повний тип дослідження', store=True)
     example = fields.Many2one('example.exploration', string='Зразок', store=True)
     conclusion = fields.Text(string='Висновок')

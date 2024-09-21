@@ -233,6 +233,12 @@ class DocktorVisit(models.Model):
     appointment=fields.Datetime(string='Запис на прийом')
     appointment_was=fields.Boolean(string='Відвідування відбулося')
 
+    def write(self, vals):
+        if 'appointment_was' in vals and vals['appointment_was']:
+            raise ValidationError("Не можна змінювати записи після відвідування.")
+
+        return super(DocktorVisit, self).write(vals)
+
     @api.constrains('appointment', 'docktor_ids')
     def _check_appointment_time(self):
         for record in self:

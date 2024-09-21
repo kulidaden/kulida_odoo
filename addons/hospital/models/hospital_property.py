@@ -1,5 +1,7 @@
 from odoo import fields, models, api
-from datetime import datetime
+from datetime import datetime, timedelta
+
+from odoo.exceptions import ValidationError
 
 
 class HospitalProperty(models.Model):
@@ -153,7 +155,8 @@ class Docktor(models.Model):
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
     intern_number = fields.Char(related='intern_id.mobile_phone', string='Номер телефону')
     patient = fields.Many2one('Patient', string='Пацієнт')
-    docktor_history_ids=fields.One2many('docktor.history','docktor_ids',string=' ')
+    docktor_history_ids=fields.One2many('docktor.history','docktor_ids')
+    doctor_schedule=fields.One2many('doctor.schedule','doctor_id')
 
 
 class Intern(models.Model):
@@ -291,8 +294,41 @@ class TypeExploration(models.Model):
                 record.complete_name = record.name
 
 
+class DoctorSchedule(models.Model):
+    _name = 'doctor.schedule'
+    _description = 'Doctor Schedule'
+    _rec_name = 'doctor_id'
 
+    doctor_id = fields.Many2one('docktor', string='Лікар', required=True)
+    date = fields.Date(string='Дата', required=True)
+    start_time = fields.Datetime(string='Початковий час', required=True)
+    end_time = fields.Datetime(string='Час закінчення', required=True)
 
+    @api.onchange('date')
+    def _onchange_time_fields(self):
+        for record in self:
+            if record.date:
+                record.start_time = fields.Datetime.to_string(fields.Datetime.from_string(record.date) + timedelta(hours=-3))
+                record.end_time = fields.Datetime.to_string(fields.Datetime.from_string(record.date) + timedelta(hours=-3))
+
+    @api.constrains('start_time', 'end_time')
+    def check_time_constraints(self):
+        for record in self:
+            if record.end_time <= record.start_time:
+                raise ValidationError("Час закінчення повинен бути пізніше, ніж початковий час.")
+
+    @api.constrains('doctor_id', 'date', 'start_time', 'end_time')
+    def _check_unique_schedule(self):
+        for record in self:
+            overlapping_schedules = self.search([
+                ('doctor_id', '=', record.doctor_id.id),
+                ('date', '=', record.date),
+                ('id', '!=', record.id),
+                '|', '&', ('start_time', '<', record.end_time), ('start_time', '>=', record.start_time),
+                '&', ('end_time', '<=', record.end_time), ('end_time', '>', record.start_time)
+            ])
+            if overlapping_schedules:
+                raise ValidationError("Лікар уже має прийом в цей час.")
 
 
 

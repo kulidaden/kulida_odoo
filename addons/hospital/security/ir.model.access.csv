@@ -18,6 +18,7 @@ access_type_exploration_user,access.type.exploration.user,model_type_exploration
 access_example_exploration_user,access.example.exploration.user,model_example_exploration,base.group_user,1,1,1,1
 access_specialisation_ids_user,access.specialisation.ids.user,model_specialisation_ids,base.group_user,1,1,1,1
 access_method_diagnosis_user,access.method.diagnosis.user,model_method_diagnosis,base.group_user,1,1,1,1
+access_doctor_schedule_user,access.doctor.schedule.user,model_doctor_schedule,base.group_user,1,1,1,1
 
 
 

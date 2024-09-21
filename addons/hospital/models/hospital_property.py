@@ -157,6 +157,7 @@ class Docktor(models.Model):
     patient = fields.Many2one('Patient', string='Пацієнт')
     docktor_history_ids=fields.One2many('docktor.history','docktor_ids')
     doctor_schedule=fields.One2many('doctor.schedule','doctor_id')
+    doctor_visit_ids=fields.One2many('docktor.visit','docktor_ids')
 
 
 class Intern(models.Model):
@@ -229,7 +230,32 @@ class DocktorVisit(models.Model):
     name = fields.Char(related='docktor_ids.name')
     time = fields.Datetime(string='Дата/Час')
     recommendation = fields.Text(string='Рекомендації')
+    appointment=fields.Datetime(string='Запис на прийом')
+    appointment_was=fields.Boolean(string='Відвідування відбулося')
 
+    @api.constrains('appointment', 'docktor_ids')
+    def _check_appointment_time(self):
+        for record in self:
+            if record.docktor_ids and record.appointment:
+                schedule = self.env['doctor.schedule'].search([
+                    ('doctor_id', '=', record.docktor_ids.id),
+                    ('date', '=', record.appointment.date())
+                ], limit=1)
+
+                if schedule:
+                    if record.appointment < schedule.start_time or record.appointment > schedule.end_time:
+                        raise ValidationError('Час запису не входить у графік лікаря!')
+                else:
+                    raise ValidationError('Час запису не входить у графік лікаря!')
+
+                existing_visits = self.search([
+                    ('docktor_ids', '=', record.docktor_ids.id),
+                    ('appointment', '=', record.appointment),
+                    ('id', '!=', record.id)
+                ])
+
+                if existing_visits:
+                    raise ValidationError('Запис на цей час вже існує у лікаря!')
 
 class Exploration(models.Model):
     _name = 'exploration'

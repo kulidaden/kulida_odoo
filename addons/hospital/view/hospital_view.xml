@@ -248,10 +248,19 @@
                         </page>
                         <page string="Розклад лікаря">
                             <field name="doctor_schedule">
-                                <tree string="Розклад прийому">
+                                <tree>
                                     <field name="date"/>
                                     <field name="start_time"/>
                                     <field name="end_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Записи лікаря">
+                            <field name="doctor_visit_ids">
+                                <tree>
+                                    <field name="patient_ids"/>
+                                    <field name="diagnosis_ids"/>
+                                    <field name="appointment"/>
                                 </tree>
                             </field>
                         </page>
@@ -288,11 +297,17 @@
             <form string="Відвідування лікаря">
                 <sheet>
                     <group>
-                        <field name="docktor_ids"/>
-                        <field name="patient_ids"/>
-                        <field name="diagnosis_ids"/>
-                        <field name="time"/>
-                        <field name="recommendation"/>
+                        <group>
+                            <field name="docktor_ids"/>
+                            <field name="patient_ids"/>
+                            <field name="diagnosis_ids"/>
+                            <field name="time"/>
+                            <field name="recommendation"/>
+                        </group>
+                        <group>
+                            <field name="appointment"/>
+                            <field name="appointment_was"/>
+                        </group>
                     </group>
                     <notebook>
                         <page string="Дослідження">

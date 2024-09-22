@@ -1,392 +1,376 @@
-
 <odoo>
-    <record id="view_patient_form" model="ir.ui.view">
-        <field name="name">patient.form"</field>
-        <field name="model">patient</field>
-        <field name="arch" type="xml">
-            <form string="Patient">
-                <sheet>
-                    <group>
+    <data>
+        <record id="view_patient_form" model="ir.ui.view">
+            <field name="name">patient.form</field>
+            <field name="model">patient</field>
+            <field name="arch" type="xml">
+                <form string="Patient">
+                    <sheet>
                         <group>
-                            <group string="Дані про пацієнта">
-                                <field name="name"/>
-                                <field name="sex"/>
-                                <field name="birthday"/>
-                                <field name="age"/>
-                            </group>
-                            <group string="Паспортні дані">
-                                <field name="choose_id_pass"/>
-                                <field name="id_card" invisible="choose_id_pass == 'паспорт'"/>
-                                <field name="id_code" invisible="choose_id_pass == 'паспорт'"/>
-                                <field name="numb_pass" invisible="choose_id_pass == 'id карта'"/>
-                                <field name="record_numb" invisible="choose_id_pass == 'id карта'"/>
-                                <field name="issuing_body"/>
-                            </group>
-                        </group>
-                        <group>
-                            <group string="Контактна особа">
-                                <field name="contact_pers_id"/>
-                                <field name="contact_name" readonly="1"/>
-                                <field name="contact_mobile_phone" readonly="1"/>
-                                <field name="contact_email" readonly="1"/>
-                                <field name="contact_relationship" readonly="1"/>
-                            </group>
-                            <group string="Персональний лікар">
-                                <field name="doctor_id"/>
-                                <field name="doctor_name" readonly="1"/>
-                                <field name="doctor_specialisation" readonly="1"/>
-                                <field name="intern"/>
-                                <field name="intern_id" invisible="not intern"/>
-                                <field name="intern_name" readonly="1" invisible="not intern"/>
-                            </group>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Діагнози пацієнта">
-                            <field name="diagnosis_ids">
-                                <tree>
-                                    <field name="diseases_name"/>
-                                    <field name="injury_name" />
-                                    <field name="doctor_ids"/>
-                                    <field name="intern_ids"/>
-                                    <field name="appointment_of_treatment"/>
-                                    <field name="comment_of_docktor"/>
-                                    <field name="data_of_diseases"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page>
-
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_patient_tree" model="ir.ui.view">
-        <field name="name">patient.tree</field>
-        <field name="model">patient</field>
-        <field name="arch" type="xml">
-            <tree string="Пацієнт">
-                <field name="name"/>
-                <field name="doctor_id"/>
-                <field name="diagnosis_name"/>
-                <field name="injure_name_id"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="patient_action" model="ir.actions.act_window">
-        <field name="name">Пацієнт</field>
-        <field name="res_model">patient</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_patient_tree"/>
-    </record>
-    <record id="view_contact_person_form" model="ir.ui.view">
-        <field name="name">contact.person.form</field>
-        <field name="model">contact.person</field>
-        <field name="arch" type="xml">
-            <form string="Contact Person">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="mobile_phone"/>
-                        <field name="email"/>
-                    </group>
-                    <group>
-                        <field name="relationship"/>
-                    </group>
-                    <group>
-                        <field name="patient_ids" widget="many2many_tags"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_directory_of_diseases_form" model="ir.ui.view">
-        <field name="name">directory.of.diseases.form</field>
-        <field name="model">directory.of.diseases</field>
-        <field name="arch" type="xml">
-            <form string="Directory of Diseases">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="type_of_diseases"/>
-                        <field name="complete_disease_type"/>
-                        <field name="description"/>
-                        <field name="classification_name"/>
-                        <field name="method_diagnosis_name"/>
-                        <field name="treatment"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_directory_of_diseases_tree" model="ir.ui.view">
-        <field name="name">directory.of.diseases.tree</field>
-        <field name="model">directory.of.diseases</field>
-        <field name="arch" type="xml">
-            <tree string="Directory of Diseases">
-                <field name="name"/>
-                <field name="type_of_diseases"/>
-                <field name="complete_disease_type"/>
-                <field name="classification_name"/>
-                <field name="method_diagnosis_name"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="directory_of_diseases_action" model="ir.actions.act_window">
-        <field name="name">Список Хвороб</field>
-        <field name="res_model">directory.of.diseases</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_directory_of_diseases_tree"/>
-        <field name="target">current</field>
-    </record>
-
-    <record id="view_diagnosis_form" model="ir.ui.view">
-        <field name="name">diagnosis.form</field>
-        <field name="model">diagnosis</field>
-        <field name="arch" type="xml">
-            <form string="Діагнози">
-                <sheet>
-                    <group>
-                        <field name="patient_ids"/>
-                        <field name="diseases_name"/>
-                        <field name="injury_name"/>
-                        <field name="appointment_of_treatment"/>
-                        <field name="comment_of_docktor" invisible="not intern"/>
-                        <field name="data_of_diseases"/>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="doctor_ids"/>
-                            <field name="doctor_name"/>
-                            <field name="doctor_specialisation"/>
-                        </group>
-                        <group>
-                            <field name="intern"/>
-                            <field name="intern_ids" invisible="not intern"/>
-                            <field name="intern_name" invisible="not intern"/>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Дослідження">
-                            <field name="exploration_ids">
-                                <tree>
+                            <group>
+                                <group string="Дані про пацієнта">
                                     <field name="name"/>
-                                    <field name="number_exploration"/>
-                                    <field name="conclusion"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_diagnosis_tree" model="ir.ui.view">
-        <field name="name">diagnosis.tree</field>
-        <field name="model">diagnosis</field>
-        <field name="arch" type="xml">
-            <tree string="Діагнози">
-                <field name="patient_ids"/>
-                <field name="doctor_ids"/>
-                <field name="diseases_name"/>
-                <field name="injury_name"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="diagnosis_action" model="ir.actions.act_window">
-        <field name="name">Діагнози</field>
-        <field name="res_model">diagnosis</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_diagnosis_tree"/>
-        <field name="target">current</field>
-    </record>
-
-    <record id="view_docktor_form" model="ir.ui.view">
-        <field name="name">docktor.form</field>
-        <field name="model">docktor</field>
-        <field name="arch" type="xml">
-            <form string="Лікар">
-                <sheet>
-                    <group>
+                                    <field name="sex"/>
+                                    <field name="birthday"/>
+                                    <field name="age"/>
+                                </group>
+                                <group string="Паспортні дані">
+                                    <field name="choose_id_pass"/>
+                                    <field name="id_card" invisible="choose_id_pass == 'паспорт'"/>
+                                    <field name="id_code" invisible="choose_id_pass == 'паспорт'"/>
+                                    <field name="numb_pass" invisible="choose_id_pass == 'id карта'"/>
+                                    <field name="record_numb" invisible="choose_id_pass == 'id карта'"/>
+                                    <field name="issuing_body"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Контактна особа">
+                                    <field name="contact_pers_id"/>
+                                    <field name="contact_name" readonly="1"/>
+                                    <field name="contact_mobile_phone" readonly="1"/>
+                                    <field name="contact_email" readonly="1"/>
+                                    <field name="contact_relationship" readonly="1"/>
+                                </group>
+                                <group string="Персональний лікар">
+                                    <field name="doctor_id"/>
+                                    <field name="doctor_name" readonly="1"/>
+                                    <field name="doctor_specialisation" readonly="1"/>
+                                    <field name="intern"/>
+                                    <field name="intern_id" invisible="not intern"/>
+                                    <field name="intern_name" readonly="1" invisible="not intern"/>
+                                </group>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Діагнози пацієнта">
+                                <field name="diagnosis_ids">
+                                    <tree>
+                                        <field name="diseases_name"/>
+                                        <field name="injury_name" />
+                                        <field name="doctor_ids"/>
+                                        <field name="intern_ids"/>
+                                        <field name="appointment_of_treatment"/>
+                                        <field name="comment_of_docktor"/>
+                                        <field name="data_of_diseases"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_patient_tree" model="ir.ui.view">
+            <field name="name">patient.tree</field>
+            <field name="model">patient</field>
+            <field name="arch" type="xml">
+                <tree string="Пацієнт">
+                    <field name="name"/>
+                    <field name="doctor_id"/>
+                    <field name="diagnosis_name"/>
+                    <field name="injure_name_id"/>
+                </tree>
+            </field>
+        </record>
+        <record id="patient_action" model="ir.actions.act_window">
+            <field name="name">Пацієнт</field>
+            <field name="res_model">patient</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_patient_tree"/>
+        </record>
+        <record id="view_contact_person_form" model="ir.ui.view">
+            <field name="name">contact.person.form</field>
+            <field name="model">contact.person</field>
+            <field name="arch" type="xml">
+                <form string="Contact Person">
+                    <sheet>
                         <group>
                             <field name="name"/>
                             <field name="mobile_phone"/>
                             <field name="email"/>
-                            <field name="sex"/>
-                            <field name="specialisation"/>
                         </group>
                         <group>
-                            <field name="photo" widget="image" class="oe_avatar" options="{'size': [250, 250]}"/>
-                            <group></group>
+                            <field name="relationship"/>
                         </group>
                         <group>
-                            <field name="intern"/>
-                            <field name="intern_id" invisible="not intern"/>
-                            <field name="intern_name" invisible="not intern"/>
-                            <field name="intern_number" invisible="not intern"/>
+                            <field name="patient_ids" widget="many2many_tags"/>
                         </group>
-                    </group>
-                    <notebook>
-                        <page string="Історія лікаря">
-                            <field name="docktor_history_ids">
-                                <tree decoration-success="status_color == 'green'" decoration-danger="status_color == 'red'">
-                                    <field name="patient_ids"/>
-                                    <field name="docktor_ids"/>
-                                    <field name="meeting"/>
-                                    <field name="status_color"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Розклад лікаря">
-                            <field name="doctor_schedule">
-                                <tree>
-                                    <field name="date"/>
-                                    <field name="start_time"/>
-                                    <field name="end_time"/>
-                                </tree>
-                            </field>
-                        </page>
-                        <page string="Записи лікаря">
-                            <field name="doctor_visit_ids">
-                                <tree>
-                                    <field name="patient_ids"/>
-                                    <field name="diagnosis_ids"/>
-                                    <field name="appointment"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_docktor_tree" model="ir.ui.view">
-        <field name="name">docktor.tree</field>
-        <field name="model">docktor</field>
-        <field name="arch" type="xml">
-            <tree string="Діагнози">
-                <field name="name"/>
-                <field name="specialisation"/>
-                <field name="intern_name"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="docktor_action" model="ir.actions.act_window">
-        <field name="name">Лікар</field>
-        <field name="res_model">docktor</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_docktor_tree"/>
-        <field name="target">current</field>
-    </record>
-
-    <record id="view_docktor_visit_form" model="ir.ui.view">
-        <field name="name">docktor.visit.form</field>
-        <field name="model">docktor.visit</field>
-        <field name="arch" type="xml">
-            <form string="Відвідування лікаря">
-                <sheet>
-                    <group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_directory_of_diseases_form" model="ir.ui.view">
+            <field name="name">directory.of.diseases.form</field>
+            <field name="model">directory.of.diseases</field>
+            <field name="arch" type="xml">
+                <form string="Directory of Diseases">
+                    <sheet>
                         <group>
-                            <field name="docktor_ids"/>
+                            <field name="name"/>
+                            <field name="type_of_diseases"/>
+                            <field name="complete_disease_type"/>
+                            <field name="description"/>
+                            <field name="classification_name"/>
+                            <field name="method_diagnosis_name"/>
+                            <field name="treatment"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_directory_of_diseases_tree" model="ir.ui.view">
+            <field name="name">directory.of.diseases.tree</field>
+            <field name="model">directory.of.diseases</field>
+            <field name="arch" type="xml">
+                <tree string="Directory of Diseases">
+                    <field name="name"/>
+                    <field name="type_of_diseases"/>
+                    <field name="complete_disease_type"/>
+                    <field name="classification_name"/>
+                    <field name="method_diagnosis_name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="directory_of_diseases_action" model="ir.actions.act_window">
+            <field name="name">Список Хвороб</field>
+            <field name="res_model">directory.of.diseases</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_directory_of_diseases_tree"/>
+            <field name="target">current</field>
+        </record>
+        <record id="view_diagnosis_form" model="ir.ui.view">
+            <field name="name">diagnosis.form</field>
+            <field name="model">diagnosis</field>
+            <field name="arch" type="xml">
+                <form string="Діагнози">
+                    <sheet>
+                        <group>
                             <field name="patient_ids"/>
-                            <field name="diagnosis_ids"/>
-                            <field name="time"/>
-                            <field name="recommendation"/>
+                            <field name="diseases_name"/>
+                            <field name="injury_name"/>
+                            <field name="appointment_of_treatment"/>
+                            <field name="comment_of_docktor" invisible="not intern"/>
+                            <field name="data_of_diseases"/>
                         </group>
                         <group>
-                            <field name="appointment"/>
-                            <field name="appointment_was"/>
+                            <group>
+                                <field name="doctor_ids"/>
+                                <field name="doctor_name"/>
+                                <field name="doctor_specialisation"/>
+                            </group>
+                            <group>
+                                <field name="intern"/>
+                                <field name="intern_ids" invisible="not intern"/>
+                                <field name="intern_name" invisible="not intern"/>
+                            </group>
                         </group>
-                    </group>
-                    <notebook>
-                        <page string="Дослідження">
-                            <field name="exploration_ids">
-                                <tree>
-                                    <field name="name"/>
-                                    <field name="number_exploration"/>
-                                    <field name="conclusion"/>
-                                </tree>
-                            </field>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_docktor_visit_tree" model="ir.ui.view">
-        <field name="name">docktor.visit.tree</field>
-        <field name="model">docktor.visit</field>
-        <field name="arch" type="xml">
-            <tree string="Відвідування лікаря">
-                <field name="docktor_ids"/>
-                <field name="patient_ids"/>
-                <field name="time"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="docktor_visit_action" model="ir.actions.act_window">
-        <field name="name">Відвідування лікаря</field>
-        <field name="res_model">docktor.visit</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_docktor_visit_tree"/>
-        <field name="target">current</field>
-    </record>
-
-    <record id="view_exploration_form" model="ir.ui.view">
-        <field name="name">exploration.form</field>
-        <field name="model">exploration</field>
-        <field name="arch" type="xml">
-            <form string="Досідження">
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="number_exploration"/>
-                        <field name="patient_ids"/>
-                        <field name="patient_age"/>
-                        <field name="diagnosis_name"/>
-                        <field name="doctor_name"/>
-                        <field name="doctor_specialisation"/>
-                        <field name="type_exploration"/>
-                        <field name="complete_exploration_type"/>
-                        <field name="example"/>
-                        <field name="conclusion"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <record id="view_exploration_tree" model="ir.ui.view">
-        <field name="name">exploration.tree</field>
-        <field name="model">exploration</field>
-        <field name="arch" type="xml">
-            <tree string="Дослідження">
-                <field name="name"/>
-                <field name="number_exploration"/>
-                <field name="patient_ids"/>
-                <field name="doctor_name"/>
-            </tree>
-        </field>
-    </record>
-
-    <record id="exploration_action" model="ir.actions.act_window">
+                        <notebook>
+                            <page string="Дослідження">
+                                <field name="exploration_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="number_exploration"/>
+                                        <field name="conclusion"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_diagnosis_tree" model="ir.ui.view">
+            <field name="name">diagnosis.tree</field>
+            <field name="model">diagnosis</field>
+            <field name="arch" type="xml">
+                <tree string="Діагнози">
+                    <field name="patient_ids"/>
+                    <field name="doctor_ids"/>
+                    <field name="diseases_name"/>
+                    <field name="injury_name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="diagnosis_action" model="ir.actions.act_window">
+            <field name="name">Діагнози</field>
+            <field name="res_model">diagnosis</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_diagnosis_tree"/>
+            <field name="target">current</field>
+        </record>
+        <record id="view_docktor_form" model="ir.ui.view">
+            <field name="name">docktor.form</field>
+            <field name="model">docktor</field>
+            <field name="arch" type="xml">
+                <form string="Лікар">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="mobile_phone"/>
+                                <field name="email"/>
+                                <field name="sex"/>
+                                <field name="specialisation"/>
+                            </group>
+                            <group>
+                                <field name="photo" widget="image" class="oe_avatar" options="{'size': [250, 250]}"/>
+                                <group></group>
+                            </group>
+                            <group>
+                                <field name="intern"/>
+                                <field name="intern_id" invisible="not intern"/>
+                                <field name="intern_name" invisible="not intern"/>
+                                <field name="intern_number" invisible="not intern"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Історія лікаря">
+                                <field name="docktor_history_ids">
+                                    <tree decoration-success="status_color == 'green'" decoration-danger="status_color == 'red'">
+                                        <field name="patient_ids"/>
+                                        <field name="docktor_ids"/>
+                                        <field name="meeting"/>
+                                        <field name="status_color"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Розклад лікаря">
+                                <field name="doctor_schedule">
+                                    <tree>
+                                        <field name="date"/>
+                                        <field name="start_time"/>
+                                        <field name="end_time"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Записи лікаря">
+                                <field name="doctor_visit_ids">
+                                    <tree>
+                                        <field name="patient_ids"/>
+                                        <field name="diagnosis_ids"/>
+                                        <field name="appointment"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_docktor_tree" model="ir.ui.view">
+            <field name="name">docktor.tree</field>
+            <field name="model">docktor</field>
+            <field name="arch" type="xml">
+                <tree string="Діагнози">
+                    <field name="name"/>
+                    <field name="specialisation"/>
+                    <field name="intern_name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="docktor_action" model="ir.actions.act_window">
+            <field name="name">Лікар</field>
+            <field name="res_model">docktor</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_docktor_tree"/>
+            <field name="target">current</field>
+        </record>
+        <record id="view_docktor_visit_form" model="ir.ui.view">
+            <field name="name">docktor.visit.form</field>
+            <field name="model">docktor.visit</field>
+            <field name="arch" type="xml">
+                <form string="Відвідування лікаря">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="docktor_ids"/>
+                                <field name="patient_ids"/>
+                                <field name="diagnosis_ids"/>
+                                <field name="time"/>
+                                <field name="recommendation"/>
+                            </group>
+                            <group>
+                                <field name="appointment"/>
+                                <field name="appointment_was"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Дослідження">
+                                <field name="exploration_ids">
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="number_exploration"/>
+                                        <field name="conclusion"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_docktor_visit_tree" model="ir.ui.view">
+            <field name="name">docktor.visit.tree</field>
+            <field name="model">docktor.visit</field>
+            <field name="arch" type="xml">
+                <tree string="Відвідування лікаря">
+                    <field name="docktor_ids"/>
+                    <field name="patient_ids"/>
+                    <field name="time"/>
+                </tree>
+            </field>
+        </record>
+        <record id="docktor_visit_action" model="ir.actions.act_window">
+            <field name="name">Відвідування лікаря</field>
+            <field name="res_model">docktor.visit</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_docktor_visit_tree"/>
+            <field name="target">current</field>
+        </record>
+        <record id="view_exploration_form" model="ir.ui.view">
+            <field name="name">exploration.form</field>
+            <field name="model">exploration</field>
+            <field name="arch" type="xml">
+                <form string="Досідження">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="number_exploration"/>
+                            <field name="patient_ids"/>
+                            <field name="patient_age"/>
+                            <field name="diagnosis_name"/>
+                            <field name="injury_name"/>
+                            <field name="doctor_name"/>
+                            <field name="doctor_specialisation"/>
+                            <field name="type_exploration"/>
+                            <field name="complete_exploration_type"/>
+                            <field name="example"/>
+                            <field name="conclusion"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_exploration_tree" model="ir.ui.view">
+            <field name="name">exploration.tree</field>
+            <field name="model">exploration</field>
+            <field name="arch" type="xml">
+                <tree string="Дослідження">
+                    <field name="name"/>
+                    <field name="number_exploration"/>
+                    <field name="patient_ids"/>
+                    <field name="doctor_name"/>
+                </tree>
+            </field>
+        </record>
+        <record id="exploration_action" model="ir.actions.act_window">
         <field name="name">Дослідження</field>
         <field name="res_model">exploration</field>
         <field name="view_mode">tree,form</field>
         <field name="view_id" ref="view_exploration_tree"/>
         <field name="target">current</field>
     </record>
+    </data>
 </odoo>

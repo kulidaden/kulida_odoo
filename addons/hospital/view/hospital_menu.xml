@@ -1,4 +1,5 @@
 <odoo>
+    <data>
     <menuitem id="menu_hospital_root" name="Лікарня"/>
     <menuitem id="menu_docktor" name="Лікарі"
               parent="menu_hospital_root"/>
@@ -16,10 +17,14 @@
     <menuitem id="menu_diagnosis" name="Діагнози"
               parent="menu_patient"
               action="diagnosis_action"/>
+    <menuitem id="menu_assign_doctor_wizard" name="Перевизначення лікаря"
+              parent="menu_patient"
+              action="action_assign_doctor_wizard"/>
     <menuitem id="menu_directory_of_diseases" name="Довідник хвороб"
               parent="menu_hospital_root"
               action="directory_of_diseases_action"/>
     <menuitem id="menu_exploration" name="Дослідження"
               parent="menu_hospital_root"
               action="exploration_action"/>
+    </data>
 </odoo>

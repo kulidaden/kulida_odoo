@@ -19,6 +19,10 @@ access_example_exploration_user,access.example.exploration.user,model_example_ex
 access_specialisation_ids_user,access.specialisation.ids.user,model_specialisation_ids,base.group_user,1,1,1,1
 access_method_diagnosis_user,access.method.diagnosis.user,model_method_diagnosis,base.group_user,1,1,1,1
 access_doctor_schedule_user,access.doctor.schedule.user,model_doctor_schedule,base.group_user,1,1,1,1
+access_assign_doctor_wizard_user,access.assign.doctor.wizard.user,model_assign_doctor_wizard,base.group_user,1,1,1,1
+
+
+
 
 
 

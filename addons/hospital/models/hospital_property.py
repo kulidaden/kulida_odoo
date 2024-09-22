@@ -1,7 +1,6 @@
 from odoo import fields, models, api
 from datetime import datetime, timedelta
-
-from odoo.exceptions import ValidationError
+from odoo.exceptions import ValidationError, UserError
 
 
 class HospitalProperty(models.Model):
@@ -62,6 +61,16 @@ class Patient(models.Model):
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
 
     exploration_ids=fields.One2many('exploration','patient_ids')
+
+    def action_mass_assign_doctor(self):
+        return {
+            'name': 'Масове переназначення лікаря',
+            'type': 'ir.actions.act_window',
+            'res_model': 'mass.assign.doctor.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_patient_ids': self.ids},
+        }
 
     @api.model
     def create(self, vals):
@@ -233,6 +242,11 @@ class DocktorVisit(models.Model):
     appointment=fields.Datetime(string='Запис на прийом')
     appointment_was=fields.Boolean(string='Відвідування відбулося')
 
+    @api.ondelete(at_uninstall=False)
+    def delete(self):
+        if self.diagnosis_ids:
+            raise ValidationError('Видаляти або архівувати запис із діагнозами не можна!')
+
     def write(self, vals):
         for record in self:
             if record.appointment_was and any(key not in ['appointment_was'] for key in vals.keys()):
@@ -264,6 +278,7 @@ class DocktorVisit(models.Model):
                 if existing_visits:
                     raise ValidationError('Запис на цей час вже існує у лікаря!')
 
+
 class Exploration(models.Model):
     _name = 'exploration'
     _description = 'Exploration'
@@ -280,6 +295,7 @@ class Exploration(models.Model):
     doctor_specialisation = fields.Many2one(related='patient_ids.doctor_specialisation', string='Спеціальність лікаря')
     patient_age = fields.Integer(related='patient_ids.age', string='Вік пацієнта')
     diagnosis_name = fields.Char(related='patient_ids.diagnosis_ids.diseases_name.name', string='Діагноз')
+    injury_name=fields.Char(related='patient_ids.diagnosis_ids.injury_name')
     doctor_name = fields.Char(related='patient_ids.doctor_name', string='Лікар')
     complete_exploration_type = fields.Char(related='type_exploration.complete_name', string='Повний тип дослідження', store=True)
     example = fields.Many2one('example.exploration', string='Зразок', store=True)
@@ -362,6 +378,25 @@ class DoctorSchedule(models.Model):
             ])
             if overlapping_schedules:
                 raise ValidationError("Лікар уже має прийом в цей час.")
+
+
+# class AssignDoctorWizard(models.TransientModel):
+#     _name = 'assign.doctor.wizard'
+#     _description = 'Візард для перевизначення лікаря'
+#
+#     patients_ids = fields.Many2many('patient', string='Пацієнти')
+#     doctor_id = fields.Many2one('docktor', string='Лікар', required=True)
+#
+#     @api.model
+#     def reassign_doctor(self, additional_arg=None):
+#         _logger.info("Reassign doctor method called")
+#         _logger.info(f"Doctor ID: {self.doctor_id.id}")
+#         _logger.info(f"Patients doctor name: {self.patients_ids.doctor_name}")
+#
+#         for patient in self.patients_ids:
+#             _logger.info(f"Updating patient {patient.id} with doctor {self.doctor_id.id}")
+#             patient.doctor_name = self.doctor_id
+
 
 
 

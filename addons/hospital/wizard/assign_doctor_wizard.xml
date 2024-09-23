@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="view_assign_doctor_wizard_form" model="ir.ui.view">
+            <field name="name">assign.doctor.wizard.form</field>
+            <field name="model">assign.doctor.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Перевизначення лікаря">
+                    <group>
+                        <field name="patients_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        <field name="doctor_id"/>
+                    </group>
+                    <footer>
+                        <button string="Перевизначити" type="object" name="reassign_doctor" class="btn-primary" context="{'default_patients_ids': active_ids}"/>
+                        <button string="Відмінити" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_assign_doctor_wizard" model="ir.actions.act_window">
+            <field name="name">Перевизначення лікаря</field>
+            <field name="res_model">assign.doctor.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_assign_doctor_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

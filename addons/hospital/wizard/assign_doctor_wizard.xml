@@ -25,5 +25,35 @@
             <field name="view_id" ref="view_assign_doctor_wizard_form"/>
             <field name="target">new</field>
         </record>
+
+        <record id="view_change_doctor_visit_wizard_form" model="ir.ui.view">
+            <field name="name">change.doctor.visit.wizard.form</field>
+            <field name="model">change.doctor.visit.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Перенести запис">
+                    <group string="Існуючий запис">
+                        <field name="patient_id"/>
+                        <field name="doctor_id"/>
+                        <field name="appointment_id"/>
+                    </group>
+                    <group string="Перенести запис">
+                        <field name="change_doctor_id"/>
+                        <field name="change_appointment_id"/>
+                    </group>
+                    <footer>
+                        <button string="Перенести запис" type="object" name="transfer_doctor_visit" class="btn-primary"/>
+                        <button string="Відмінити" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_change_doctor_visit_wizard" model="ir.actions.act_window">
+            <field name="name">Перенести запис</field>
+            <field name="res_model">change.doctor.visit.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_change_doctor_visit_wizard_form"/>
+            <field name="target">new</field>
+        </record>
     </data>
 </odoo>

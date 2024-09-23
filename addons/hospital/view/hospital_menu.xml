@@ -9,6 +9,9 @@
     <menuitem id="menu_docktor_visit" name="Відвідування"
               parent="menu_docktor"
               action="docktor_visit_action"/>
+    <menuitem id="menu_change_doctor_visit" name="Перенести запис"
+              parent="menu_docktor"
+              action="action_change_doctor_visit_wizard"/>
     <menuitem id="menu_patient" name="Пацієнти"
               parent="menu_hospital_root"/>
     <menuitem id="menu_sub_patient" name="Пацієнти"

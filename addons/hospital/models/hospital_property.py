@@ -267,7 +267,7 @@ class DocktorVisit(models.Model):
                     if record.appointment < schedule.start_time or record.appointment > schedule.end_time:
                         raise ValidationError('Час запису не входить у графік лікаря!')
                 else:
-                    raise ValidationError('Час запису не входить у графік лікаря!')
+                    raise ValidationError('Дата запису не входить у графік лікаря!')
 
                 existing_visits = self.search([
                     ('docktor_ids', '=', record.docktor_ids.id),

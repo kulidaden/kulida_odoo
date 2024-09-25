@@ -264,7 +264,7 @@ class DocktorVisit(models.Model):
                 ], limit=1)
 
                 if schedule:
-                    if record.appointment < schedule.start_time or record.appointment > schedule.end_time:
+                    if record.appointment < schedule.start_time_invisible or record.appointment > schedule.end_time_invisible:
                         raise ValidationError('Час запису не входить у графік лікаря!')
                 else:
                     raise ValidationError('Дата запису не входить у графік лікаря!')
@@ -349,54 +349,40 @@ class DoctorSchedule(models.Model):
     _rec_name = 'doctor_id'
 
     doctor_id = fields.Many2one('docktor', string='Лікар', required=True)
-    date = fields.Date(string='Дата', required=True)
-    start_time = fields.Datetime(string='Початковий час', required=True)
-    end_time = fields.Datetime(string='Час закінчення', required=True)
+    date=fields.Date(string='Дата')
+    day_of_week = fields.Selection(string='День тижня', selection=[
+        ('0', 'Понеділок'),
+        ('1', 'Вівторок'),
+        ('2', 'Середа'),
+        ('3', 'Четрверг'),
+        ('4', 'П\'ятниця'),
+        ('5', 'Субота'),
+        ('6', 'Неділя'),
 
-    @api.onchange('date')
-    def _onchange_time_fields(self):
-        for record in self:
-            if record.date:
-                record.start_time = fields.Datetime.to_string(fields.Datetime.from_string(record.date) + timedelta(hours=-3))
-                record.end_time = fields.Datetime.to_string(fields.Datetime.from_string(record.date) + timedelta(hours=-3))
+    ])
+    start_time_invisible = fields.Datetime()
+    end_time_invisible = fields.Datetime()
+    start_time = fields.Char(string='Початковий час', required=True)
+    end_time = fields.Char(string='Час закінчення', required=True)
+    week_type = fields.Char(string='Тип тижня')
 
-    @api.constrains('start_time', 'end_time')
+    @api.constrains('start_time_invisible', 'end_time_invisible')
     def check_time_constraints(self):
         for record in self:
-            if record.end_time <= record.start_time:
+            if record.end_time_invisible < record.start_time_invisible:
                 raise ValidationError("Час закінчення повинен бути пізніше, ніж початковий час.")
 
-    @api.constrains('doctor_id', 'date', 'start_time', 'end_time')
+    @api.constrains('doctor_id', 'date', 'start_time_invisible', 'end_time_invisible')
     def _check_unique_schedule(self):
         for record in self:
             overlapping_schedules = self.search([
                 ('doctor_id', '=', record.doctor_id.id),
                 ('date', '=', record.date),
                 ('id', '!=', record.id),
-                '|', '&', ('start_time', '<', record.end_time), ('start_time', '>=', record.start_time),
-                '&', ('end_time', '<=', record.end_time), ('end_time', '>', record.start_time)
+                '|', '&', ('start_time_invisible', '<', record.end_time_invisible), ('start_time', '>=', record.start_time_invisible),
+                '&', ('end_time_invisible', '<=', record.end_time_invisible), ('end_time_invisible', '>', record.start_time_invisible)
             ])
             if overlapping_schedules:
                 raise ValidationError("Лікар уже має прийом в цей час.")
-
-
-# class AssignDoctorWizard(models.TransientModel):
-#     _name = 'assign.doctor.wizard'
-#     _description = 'Візард для перевизначення лікаря'
-#
-#     patients_ids = fields.Many2many('patient', string='Пацієнти')
-#     doctor_id = fields.Many2one('docktor', string='Лікар', required=True)
-#
-#     @api.model
-#     def reassign_doctor(self, additional_arg=None):
-#         _logger.info("Reassign doctor method called")
-#         _logger.info(f"Doctor ID: {self.doctor_id.id}")
-#         _logger.info(f"Patients doctor name: {self.patients_ids.doctor_name}")
-#
-#         for patient in self.patients_ids:
-#             _logger.info(f"Updating patient {patient.id} with doctor {self.doctor_id.id}")
-#             patient.doctor_name = self.doctor_id
-
-
 
 

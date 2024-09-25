@@ -21,7 +21,7 @@ access_method_diagnosis_user,access.method.diagnosis.user,model_method_diagnosis
 access_doctor_schedule_user,access.doctor.schedule.user,model_doctor_schedule,base.group_user,1,1,1,1
 access_assign_doctor_wizard_user,access.assign.doctor.wizard.user,model_assign_doctor_wizard,base.group_user,1,1,1,1
 access_change_doctor_visit_wizard_user,access.change.doctor.visit.wizard.user,model_change_doctor_visit_wizard,base.group_user,1,1,1,1
-
+access_doctor_schedule_wizard_user,access.doctor.schedule.wizard.user,model_doctor_schedule_wizard,base.group_user,1,1,1,1
 
 
 

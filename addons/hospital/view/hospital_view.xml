@@ -224,6 +224,10 @@
                                 <field name="intern_name" invisible="not intern"/>
                                 <field name="intern_number" invisible="not intern"/>
                             </group>
+
+                        </group>
+                        <group>
+                            <button name="%(action_doctor_schedule_wizard)d" type="action" string="Створити розклад" class="oe_highlight" />
                         </group>
                         <notebook>
                             <page string="Історія лікаря">
@@ -240,8 +244,10 @@
                                 <field name="doctor_schedule">
                                     <tree>
                                         <field name="date"/>
+                                        <field name="day_of_week"/>
                                         <field name="start_time"/>
                                         <field name="end_time"/>
+                                        <field name="week_type"/>
                                     </tree>
                                 </field>
                             </page>

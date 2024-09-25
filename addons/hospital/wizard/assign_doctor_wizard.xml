@@ -55,5 +55,49 @@
             <field name="view_id" ref="view_change_doctor_visit_wizard_form"/>
             <field name="target">new</field>
         </record>
+
+        <record id="view_doctor_schedule_wizard_form" model="ir.ui.view">
+            <field name="name">doctor.schedule.wizard.form</field>
+            <field name="model">doctor.schedule.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Розклад лікаря">
+                    <group string='Запишіть дату з якої починеться запис розкладу👇'>
+                        <field name="date"/>
+                        <group>
+                            <field name="doctor_id"/>
+                            <field name="monday_start"/>
+                            <field name="tuesday_start"/>
+                            <field name="wednesday_start"/>
+                            <field name="thursday_start"/>
+                            <field name="friday_start"/>
+                            <field name="saturday_start"/>
+                            <field name="sunday_start"/>
+                        </group>
+                        <group>
+                            <field name="week_type"/>
+                            <field name="monday_end"/>
+                            <field name="tuesday_end"/>
+                            <field name="wednesday_end"/>
+                            <field name="thursday_end"/>
+                            <field name="friday_end"/>
+                            <field name="saturday_end"/>
+                            <field name="sunday_end"/>
+                        </group>
+                        <footer>
+                            <button string="Записати розклад" type="object" name="apply_schedule" class="btn-primary"/>
+                            <button string="Відмінити" class="btn-secondary" special="cancel"/>
+                    </footer>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_doctor_schedule_wizard" model="ir.actions.act_window">
+            <field name="name">Розклад лікаря</field>
+            <field name="res_model">doctor.schedule.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_doctor_schedule_wizard_form"/>
+            <field name="target">new</field>
+        </record>
     </data>
 </odoo>

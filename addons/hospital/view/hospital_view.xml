@@ -55,13 +55,12 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page>
-                            </page>
                         </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
+
         <record id="view_patient_tree" model="ir.ui.view">
             <field name="name">patient.tree</field>
             <field name="model">patient</field>
@@ -74,12 +73,14 @@
                 </tree>
             </field>
         </record>
+
         <record id="patient_action" model="ir.actions.act_window">
             <field name="name">Пацієнт</field>
             <field name="res_model">patient</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="view_patient_tree"/>
         </record>
+
         <record id="view_contact_person_form" model="ir.ui.view">
             <field name="name">contact.person.form</field>
             <field name="model">contact.person</field>
@@ -101,6 +102,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_directory_of_diseases_form" model="ir.ui.view">
             <field name="name">directory.of.diseases.form</field>
             <field name="model">directory.of.diseases</field>
@@ -120,6 +122,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_directory_of_diseases_tree" model="ir.ui.view">
             <field name="name">directory.of.diseases.tree</field>
             <field name="model">directory.of.diseases</field>
@@ -133,6 +136,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="directory_of_diseases_action" model="ir.actions.act_window">
             <field name="name">Список Хвороб</field>
             <field name="res_model">directory.of.diseases</field>
@@ -140,6 +144,7 @@
             <field name="view_id" ref="view_directory_of_diseases_tree"/>
             <field name="target">current</field>
         </record>
+
         <record id="view_diagnosis_form" model="ir.ui.view">
             <field name="name">diagnosis.form</field>
             <field name="model">diagnosis</field>
@@ -181,6 +186,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_diagnosis_tree" model="ir.ui.view">
             <field name="name">diagnosis.tree</field>
             <field name="model">diagnosis</field>
@@ -193,6 +199,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="diagnosis_action" model="ir.actions.act_window">
             <field name="name">Діагнози</field>
             <field name="res_model">diagnosis</field>
@@ -200,6 +207,7 @@
             <field name="view_id" ref="view_diagnosis_tree"/>
             <field name="target">current</field>
         </record>
+
         <record id="view_docktor_form" model="ir.ui.view">
             <field name="name">docktor.form</field>
             <field name="model">docktor</field>
@@ -265,6 +273,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_docktor_tree" model="ir.ui.view">
             <field name="name">docktor.tree</field>
             <field name="model">docktor</field>
@@ -276,6 +285,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="docktor_action" model="ir.actions.act_window">
             <field name="name">Лікар</field>
             <field name="res_model">docktor</field>
@@ -283,6 +293,7 @@
             <field name="view_id" ref="view_docktor_tree"/>
             <field name="target">current</field>
         </record>
+
         <record id="view_docktor_visit_form" model="ir.ui.view">
             <field name="name">docktor.visit.form</field>
             <field name="model">docktor.visit</field>
@@ -317,6 +328,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_docktor_visit_tree" model="ir.ui.view">
             <field name="name">docktor.visit.tree</field>
             <field name="model">docktor.visit</field>
@@ -328,6 +340,7 @@
                 </tree>
             </field>
         </record>
+
         <record id="docktor_visit_action" model="ir.actions.act_window">
             <field name="name">Відвідування лікаря</field>
             <field name="res_model">docktor.visit</field>
@@ -335,6 +348,7 @@
             <field name="view_id" ref="view_docktor_visit_tree"/>
             <field name="target">current</field>
         </record>
+
         <record id="view_exploration_form" model="ir.ui.view">
             <field name="name">exploration.form</field>
             <field name="model">exploration</field>
@@ -359,6 +373,7 @@
                 </form>
             </field>
         </record>
+
         <record id="view_exploration_tree" model="ir.ui.view">
             <field name="name">exploration.tree</field>
             <field name="model">exploration</field>
@@ -371,12 +386,13 @@
                 </tree>
             </field>
         </record>
+
         <record id="exploration_action" model="ir.actions.act_window">
-        <field name="name">Дослідження</field>
-        <field name="res_model">exploration</field>
-        <field name="view_mode">tree,form</field>
-        <field name="view_id" ref="view_exploration_tree"/>
-        <field name="target">current</field>
-    </record>
+            <field name="name">Дослідження</field>
+            <field name="res_model">exploration</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_exploration_tree"/>
+            <field name="target">current</field>
+        </record>
     </data>
 </odoo>

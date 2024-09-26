@@ -86,7 +86,7 @@
                         <footer>
                             <button string="Записати розклад" type="object" name="apply_schedule" class="btn-primary"/>
                             <button string="Відмінити" class="btn-secondary" special="cancel"/>
-                    </footer>
+                        </footer>
                     </group>
                 </form>
             </field>
@@ -113,6 +113,10 @@
                         <field name="diseases_name"/>
                         <field name="count_diagnosis"/>
                     </group>
+                    <footer>
+                        <button string="Зберегти" type="object" class="btn-primary" special="save"/>
+                        <button string="Відмінити" class="btn-secondary" special="cancel"/>
+                    </footer>
                 </form>
             </field>
         </record>

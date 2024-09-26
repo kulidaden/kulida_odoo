@@ -43,13 +43,13 @@ class DoctorScheduleWizard(models.TransientModel):
     _name = 'doctor.schedule.wizard'
     _description = 'Doctor Schedule Wizard'
 
-    doctor_id=fields.Many2one('docktor', string='Лікар')
+    doctor_id=fields.Many2one('docktor', string='Лікар', required=True)
     week_type=fields.Selection(string='Тип тижня', selection=[
         ('парний','Парний тиждень'),
         ('непарний', 'Непарний тиждень')
-    ])
+    ], required=True)
 
-    date=fields.Date()
+    date=fields.Date(required=True)
 
     monday_start = fields.Datetime(string='Понеділок початок робочого дня')
     monday_end = fields.Datetime(string='Понеділок кінець робочого дня')
@@ -121,9 +121,7 @@ class ReportingDiseaseWizard(models.TransientModel):
 
     @api.onchange('start_date','end_date','diseases_name')
     def _count_diseases_diagnosis(self):
-        print('1123123123')
         if self.start_date and self.end_date and self.diseases_name:
-            print('22222222222222222222222')
             self.count_diagnosis=self.env['diagnosis'].search_count([
                 ('diseases_name','=', self.diseases_name.id),
                 ('data_of_diseases','>=', self.start_date),

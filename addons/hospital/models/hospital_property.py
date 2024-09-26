@@ -1,6 +1,6 @@
 from odoo import fields, models, api
-from datetime import datetime, timedelta
-from odoo.exceptions import ValidationError, UserError
+from datetime import datetime
+from odoo.exceptions import ValidationError
 
 
 class HospitalProperty(models.Model):
@@ -61,16 +61,6 @@ class Patient(models.Model):
     intern_name = fields.Char(related='intern_id.name', string='ПІБ інтерна', store=True)
 
     exploration_ids=fields.One2many('exploration','patient_ids')
-
-    def action_mass_assign_doctor(self):
-        return {
-            'name': 'Масове переназначення лікаря',
-            'type': 'ir.actions.act_window',
-            'res_model': 'mass.assign.doctor.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {'default_patient_ids': self.ids},
-        }
 
     @api.model
     def create(self, vals):
@@ -232,12 +222,12 @@ class DocktorVisit(models.Model):
     _name = 'docktor.visit'
     _description = "Docktor's visit"
 
-    patient_ids = fields.Many2one('patient', string='Пацієнт')
-    docktor_ids = fields.Many2one('docktor', string='Лікар')
+    patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
+    docktor_ids = fields.Many2one('docktor', string='Лікар', required=True)
     exploration_ids = fields.One2many('exploration', 'doctor_ids', string='Дослідження')
     diagnosis_ids = fields.Char(related='patient_ids.diagnosis_name', string='Діагноз')
     name = fields.Char(related='docktor_ids.name')
-    time = fields.Datetime(string='Дата/Час')
+    time = fields.Datetime(string='Дата/Час', required=True)
     recommendation = fields.Text(string='Рекомендації')
     appointment=fields.Datetime(string='Запис на прийом')
     appointment_was=fields.Boolean(string='Відвідування відбулося')
@@ -286,8 +276,8 @@ class Exploration(models.Model):
         ('unique_number_exploration', 'unique(number_exploration)', 'Номер має бути унікальним!')
     ]
 
-    name = fields.Char(string='Дослідження')
-    number_exploration = fields.Char(string='Номер дослідження')
+    name = fields.Char(string='Дослідження', required=True)
+    number_exploration = fields.Char(string='Номер дослідження', required=True)
     patient_ids = fields.Many2one('patient', string='Пацієнт', required=True)
     doctor_ids = fields.Many2one('docktor.visit', string='Відвідування лікаря')
     diagnosis_ids=fields.Many2one('diagnosis',string='Діагнози')

@@ -1,33 +1,39 @@
 <odoo>
     <data>
-    <menuitem id="menu_hospital_root" name="Лікарня"/>
-    <menuitem id="menu_docktor" name="Лікарі"
-              parent="menu_hospital_root"/>
-    <menuitem id="menu_sub_docktor" name="Лікарі"
-              parent="menu_docktor"
-              action="docktor_action"/>
-    <menuitem id="menu_docktor_visit" name="Відвідування"
-              parent="menu_docktor"
-              action="docktor_visit_action"/>
-    <menuitem id="menu_change_doctor_visit" name="Перенести запис"
-              parent="menu_docktor"
-              action="action_change_doctor_visit_wizard"/>
-    <menuitem id="menu_patient" name="Пацієнти"
-              parent="menu_hospital_root"/>
-    <menuitem id="menu_sub_patient" name="Пацієнти"
-              parent="menu_patient"
-              action="patient_action"/>
-    <menuitem id="menu_diagnosis" name="Діагнози"
-              parent="menu_patient"
-              action="diagnosis_action"/>
-    <menuitem id="menu_assign_doctor_wizard" name="Перевизначення лікаря"
-              parent="menu_patient"
-              action="action_assign_doctor_wizard"/>
-    <menuitem id="menu_directory_of_diseases" name="Довідник хвороб"
-              parent="menu_hospital_root"
-              action="directory_of_diseases_action"/>
-    <menuitem id="menu_exploration" name="Дослідження"
-              parent="menu_hospital_root"
-              action="exploration_action"/>
+        <menuitem id="menu_hospital_root" name="Лікарня"/>
+        <menuitem id="menu_docktor" name="Лікарі"
+                  parent="menu_hospital_root"/>
+        <menuitem id="menu_sub_docktor" name="Лікарі"
+                  parent="menu_docktor"
+                  action="docktor_action"/>
+        <menuitem id="menu_docktor_visit" name="Відвідування"
+                  parent="menu_docktor"
+                  action="docktor_visit_action"/>
+        <menuitem id="menu_change_doctor_visit" name="Перенести запис"
+                  parent="menu_docktor"
+                  action="action_change_doctor_visit_wizard"/>
+        <menuitem id="menu_reporting_disease_from_docktor" name="Звітність"
+                  parent="menu_docktor"
+                  action="action_reporting_disease_wizard"/>
+        <menuitem id="menu_patient" name="Пацієнти"
+                  parent="menu_hospital_root"/>
+        <menuitem id="menu_sub_patient" name="Пацієнти"
+                  parent="menu_patient"
+                  action="patient_action"/>
+        <menuitem id="menu_diagnosis" name="Діагнози"
+                  parent="menu_patient"
+                  action="diagnosis_action"/>
+        <menuitem id="menu_assign_doctor_wizard" name="Перевизначення лікаря"
+                  parent="menu_patient"
+                  action="action_assign_doctor_wizard"/>
+        <menuitem id="menu_directory_of_diseases" name="Довідник хвороб"
+                  parent="menu_hospital_root"
+                  action="directory_of_diseases_action"/>
+        <menuitem id="menu_exploration" name="Дослідження"
+                  parent="menu_hospital_root"
+                  action="exploration_action"/>
+        <menuitem id="menu_reporting_disease" name="Звітність"
+                  parent="menu_hospital_root"
+                  action="action_reporting_disease_wizard"/>
     </data>
 </odoo>

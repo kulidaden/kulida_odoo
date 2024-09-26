@@ -99,5 +99,30 @@
             <field name="view_id" ref="view_doctor_schedule_wizard_form"/>
             <field name="target">new</field>
         </record>
+
+        <record id="view_reporting_disease_wizard" model="ir.ui.view">
+            <field name="name">reporting.disease.wizard.form</field>
+            <field name="model">reporting.disease.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Звітність хвороб">
+                    <group string="Встановіть дати">
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    <group string="Кількість діагнозів хвороби👇 за встановлений період">
+                        <field name="diseases_name"/>
+                        <field name="count_diagnosis"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_reporting_disease_wizard" model="ir.actions.act_window">
+            <field name="name">Звітність хвороб</field>
+            <field name="res_model">reporting.disease.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_reporting_disease_wizard"/>
+            <field name="target">new</field>
+        </record>
     </data>
 </odoo>

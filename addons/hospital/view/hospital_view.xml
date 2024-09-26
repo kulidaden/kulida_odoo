@@ -207,6 +207,9 @@
                 <form string="Лікар">
                     <sheet>
                         <group>
+                            <button name="%(action_reporting_disease_wizard)d" type="action" string="Звітність хвороб" class="oe_highlight" />
+                        </group>
+                        <group>
                             <group>
                                 <field name="name"/>
                                 <field name="mobile_phone"/>
@@ -223,11 +226,8 @@
                                 <field name="intern_id" invisible="not intern"/>
                                 <field name="intern_name" invisible="not intern"/>
                                 <field name="intern_number" invisible="not intern"/>
+                                <button name="%(action_doctor_schedule_wizard)d" type="action" string="Створити розклад" class="oe_highlight" />
                             </group>
-
-                        </group>
-                        <group>
-                            <button name="%(action_doctor_schedule_wizard)d" type="action" string="Створити розклад" class="oe_highlight" />
                         </group>
                         <notebook>
                             <page string="Історія лікаря">

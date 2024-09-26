@@ -1,1 +1,1 @@
-from . import assign_doctor
+from . import wizard
